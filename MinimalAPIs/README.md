@@ -4,11 +4,11 @@ Minimal APIs implementation of the FastTickets API.
 
 ## Running the application
 
-To be able to run the application locally make sure that Api is set up as a startup project.
+To be able to run the application locally make sure that API is set up as a startup project.
 
 Refer to the [FastTickets.http](FastTickets.http) file for some sample requests to see the API in action.
 
-The persistence is done in SQLite, both for the application and the integration tests. But both of them use different databases. The names for the different databases are taken from the [appsettings.json](Api/appsettings.json) file.
+The persistence is done in SQLite, both for the application and the integration tests. But both of them use different databases. The names for the different databases are taken from the [appsettings.json](API/appsettings.json) file.
 
 ## Seed data
 
