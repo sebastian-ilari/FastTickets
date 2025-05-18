@@ -1,12 +1,16 @@
-﻿using Persistence.Data;
+﻿using Microsoft.Extensions.Configuration;
+using Persistence.Data;
 
 namespace Persistence.DBFactories;
 
 public class FastTicketsDBFactoryTest : FastTicketsDBFactoryBase
 {
-    public FastTicketsDBFactoryTest()
+    public FastTicketsDBFactoryTest(IConfiguration configuration)
     {
-        _dbName = DbName.TestDb;
+        var dbName = configuration["Database:Tests"]
+            ?? throw new ApplicationException("Test database name not set in appsettings.json");
+
+        _dbName = dbName;
         _seedData = new SeedTestData();
     }
 }

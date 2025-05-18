@@ -2,6 +2,7 @@
 using NUnit.Framework;
 using Persistence;
 using Persistence.DBFactories;
+using Tests.Common;
 using Tests.Infrastructure;
 
 namespace Tests.Api;
@@ -19,7 +20,7 @@ public abstract class APITestsBase
     {
         _factory = new TestingApplication();
         _client = _factory.CreateClient();
-        _dbFactory = new FastTicketsDBFactoryTest();
+        _dbFactory = new FastTicketsDBFactoryTest(ConfigurationHelper.GetConfiguration());
         _db = await _dbFactory.Create();
     }
 

@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using Persistence;
 using Persistence.DBFactories;
+using Tests.Common;
 
 namespace Tests.Services;
 
@@ -13,7 +14,7 @@ public abstract class ServiceTestsBase
     [OneTimeSetUp]
     public virtual async Task OneTimeSetup()
     {
-        _dbFactory = new FastTicketsDBFactoryTest();
+        _dbFactory = new FastTicketsDBFactoryTest(ConfigurationHelper.GetConfiguration());
         _db = await _dbFactory.Create();
     }
 

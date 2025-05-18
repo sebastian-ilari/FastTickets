@@ -6,12 +6,15 @@ using Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var dbName = builder.Configuration["Database:Application"] 
+    ?? throw new ApplicationException("Application database name not set in appsettings.json");
+
 builder.Services.AddDbContext<FastTicketsDB>(options =>
 {
-    options.UseSqlite($"Data Source={DbName.ApplicationDb};Mode=Memory;Cache=Shared");
+    options.UseSqlite($"Data Source={dbName};Mode=Memory;Cache=Shared");
 });
 
-var dbFactory = new FastTicketsDBFactory();
+var dbFactory = new FastTicketsDBFactory(builder.Configuration);
 await dbFactory.Create();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
