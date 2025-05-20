@@ -38,7 +38,7 @@ public static class FastTicketsEndpoints
             .Select(s => new SectorOutput(s)).ToArrayAsync());
     }
 
-    static async Task<IResult> BuyTicket(FastTicketsDB db, int showId, BuyTicketsRequest request, ITicketService ticketService)
+    static async Task<IResult> BuyTicket(int showId, BuyTicketsRequest request, ITicketService ticketService)
     {
         if (request.Quantity <= 0)
             return TypedResults.BadRequest("Quantity must be greater than 0");
