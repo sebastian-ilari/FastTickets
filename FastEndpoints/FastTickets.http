@@ -1,0 +1,22 @@
+﻿@HostAddress = http://localhost:8080/fast-tickets
+
+### Get Shows
+
+GET {{HostAddress}}/shows
+
+### Get available tickets for a Show
+
+GET {{HostAddress}}/show/2/tickets
+
+### Buy tickets for a Show
+
+POST {{HostAddress}}/show/2/tickets
+Content-Type: application/json
+{
+  "sectorId": 2,
+  "quantity": 50
+}
+
+### Get bought Tickets
+
+GET {{HostAddress}}/tickets
