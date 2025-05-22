@@ -5,7 +5,7 @@ using Persistence.DBFactories;
 using Tests.Common;
 using Tests.Infrastructure;
 
-namespace Tests.Api;
+namespace Tests.API;
 
 [TestFixture]
 public abstract class APITestsBase

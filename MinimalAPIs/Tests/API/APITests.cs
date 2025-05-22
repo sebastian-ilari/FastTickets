@@ -4,7 +4,7 @@ using NUnit.Framework;
 using System.Net;
 using System.Net.Http.Json;
 
-namespace Tests.Api;
+namespace Tests.API;
 
 [TestFixture]
 public class APITests : APITestsBase

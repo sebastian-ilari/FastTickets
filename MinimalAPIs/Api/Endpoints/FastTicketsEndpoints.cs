@@ -25,7 +25,7 @@ public static class FastTicketsEndpoints
 
     static async Task<IResult> GetShows(FastTicketsDB db)
     {
-        return TypedResults.Ok(await db.Shows.Select(s => new ShowOutput(s)).ToArrayAsync());
+        return TypedResults.Ok(await db.Shows.Select(s => new ShowOutput(s)).ToListAsync());
     }
 
     static async Task<IResult> GetAvailableTickets(int showId, FastTicketsDB db)
@@ -35,7 +35,7 @@ public static class FastTicketsEndpoints
             return TypedResults.BadRequest($"Show {showId} not found");
 
         return TypedResults.Ok(await db.Sectors.Where(s => s.ShowId == showId)
-            .Select(s => new SectorOutput(s)).ToArrayAsync());
+            .Select(s => new SectorOutput(s)).ToListAsync());
     }
 
     static async Task<IResult> BuyTicket(int showId, BuyTicketsRequest request, ITicketService ticketService)
@@ -54,5 +54,5 @@ public static class FastTicketsEndpoints
             .Include(t => t.Show)
             .Include(t => t.Sector)
             .Select(t => new TicketOutput(t))
-            .ToArrayAsync());
+            .ToListAsync());
 }
