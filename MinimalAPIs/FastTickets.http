@@ -1,4 +1,4 @@
-﻿@HostAddress = https://localhost:7097/fast-tickets
+﻿@HostAddress = http://localhost:8080/fast-tickets
 
 ### Get Shows
 
@@ -6,13 +6,11 @@ GET {{HostAddress}}/shows
 
 ### Get available tickets for a Show
 
-@showId=2
-GET {{HostAddress}}/show/{{showId}}/tickets
+GET {{HostAddress}}/show/2/tickets
 
 ### Buy tickets for a Show
 
-@showId=2
-POST {{HostAddress}}/show/{{showId}}/tickets
+POST {{HostAddress}}/show/2/tickets
 Content-Type: application/json
 {
   "sectorId": 2,
