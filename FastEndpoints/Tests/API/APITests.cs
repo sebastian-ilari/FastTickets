@@ -24,11 +24,11 @@ public class APITests : APITestsBase
     }
 
     [Test]
-    public async Task GetAvailableTickets_ShowNotFound_ThrowsException()
+    public async Task GetAvailableTickets_ShowNotFound_ReturnsNotFound()
     {
         var response = await _client.GetAsync("/fast-tickets/show/200/tickets");
         
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
 
     [Test]

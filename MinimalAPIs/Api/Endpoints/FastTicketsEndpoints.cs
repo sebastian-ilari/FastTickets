@@ -32,7 +32,7 @@ public static class FastTicketsEndpoints
     {
         var show = await db.Shows.FindAsync(showId);
         if (show == null)
-            return TypedResults.BadRequest($"Show {showId} not found");
+            return TypedResults.NotFound($"Show {showId} not found");
 
         return TypedResults.Ok(await db.Sectors.Where(s => s.ShowId == showId)
             .Select(s => new SectorOutput(s)).ToListAsync());

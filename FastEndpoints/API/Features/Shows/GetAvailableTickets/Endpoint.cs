@@ -24,7 +24,7 @@ internal sealed class Endpoint : Endpoint<Request, Results<Ok<List<Response>>, B
         var show = await _fastTicketsDB.Shows.FindAsync(request.ShowId, cancellationToken);
         if (show == null)
         {
-            await SendResultAsync(TypedResults.BadRequest($"Show {request.ShowId} not found"));
+            await SendResultAsync(TypedResults.NotFound($"Show {request.ShowId} not found"));
             return;
         }
 
