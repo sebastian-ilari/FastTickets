@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using Shouldly;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -15,20 +16,20 @@ public class APITests : APITestsBase
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<List<API.Features.Shows.GetShows.Response>>();
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result!, Has.Count.EqualTo(2));
-        Assert.That(result!.ToArray()[0].Artist, Is.EqualTo("Artist 01"));
-        Assert.That(result!.ToArray()[0].Name, Is.EqualTo("Show Name 01"));
-        Assert.That(result!.ToArray()[0].Venue, Is.EqualTo("Venue 01"));
-        Assert.That(result!.ToArray()[0].Date, Is.EqualTo(new DateTime(1990, 1, 1)));
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(2);
+        result!.ToArray()[0].Artist.ShouldBe("Artist 01");
+        result!.ToArray()[0].Name.ShouldBe("Show Name 01");
+        result!.ToArray()[0].Venue.ShouldBe("Venue 01");
+        result!.ToArray()[0].Date.ShouldBeEquivalentTo(new DateTime(1990, 1, 1));
     }
 
     [Test]
     public async Task GetAvailableTickets_ShowNotFound_ReturnsNotFound()
     {
         var response = await _client.GetAsync("/fast-tickets/show/200/tickets");
-        
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
     [Test]
@@ -39,15 +40,15 @@ public class APITests : APITestsBase
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<IEnumerable<API.Features.Shows.GetAvailableTickets.Response>> ();
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result!, Has.Count.EqualTo(2));
-        Assert.That(result!.ToArray()[0].Name, Is.EqualTo("Sector 01"));
-        Assert.That(result!.ToArray()[0].TotalSpots, Is.EqualTo(200));
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(2);
+        result!.ToArray()[0].Name.ShouldBe("Sector 01");
+        result!.ToArray()[0].TotalSpots.ShouldBe(200);
         //Not asserting on this property because it will change when tests that buy tickets are run
-        //Assert.That(result!.ToArray()[0].AvailableSpots, Is.EqualTo(100));
-        Assert.That(result!.ToArray()[1].Name, Is.EqualTo("Sector 02"));
-        Assert.That(result!.ToArray()[1].TotalSpots, Is.EqualTo(400));
-        Assert.That(result!.ToArray()[1].AvailableSpots, Is.EqualTo(200));
+        //result!.ToArray()[0].AvailableSpots.ShouldBe(100);
+        result!.ToArray()[1].Name.ShouldBe("Sector 02");
+        result!.ToArray()[1].TotalSpots.ShouldBe(400);
+        result!.ToArray()[1].AvailableSpots.ShouldBe(200);
     }
 
     /*
@@ -56,7 +57,7 @@ public class APITests : APITestsBase
     {
         var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketsRequest(2, 0));
 
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 
     [Test]
@@ -64,7 +65,7 @@ public class APITests : APITestsBase
     {
         var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketsRequest(2, -5));
 
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
 
     [Test]
@@ -72,7 +73,7 @@ public class APITests : APITestsBase
     {
         var response = await _client.PostAsJsonAsync("/fast-tickets/show/200/tickets", new BuyTicketsRequest(2, 1));
 
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
+        response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
     }
 
     [Test]
@@ -80,7 +81,7 @@ public class APITests : APITestsBase
     {
         var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketsRequest(200, 1));
 
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
+        response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
     }
 
     [Test]
@@ -88,7 +89,7 @@ public class APITests : APITestsBase
     {
         var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketsRequest(2, 150));
 
-        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
+        response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
     }
 
     [Test]
@@ -99,12 +100,12 @@ public class APITests : APITestsBase
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<TicketOutput>();
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result!.Show, Is.EqualTo("Show Name 02"));
-        Assert.That(result!.Artist, Is.EqualTo("Artist 02"));
-        Assert.That(result!.Sector, Is.EqualTo("Sector 01"));
-        Assert.That(result!.Quantity, Is.EqualTo(5));
-        Assert.That(result!.Date, Is.EqualTo(new DateTime(1995, 2, 1)));
+        result.ShouldNotBeNull();
+        result.Show.ShouldBe("Show Name 02");
+        result.Artist.ShouldBe("Artist 02");
+        result.Sector.ShouldBe("Sector 01");
+        result.Quantity.ShouldBe(5);
+        result.Date.ShouldBeEquivalentTo(new DateTime(1995, 2, 1));
     }
 
     [Test]
@@ -115,13 +116,13 @@ public class APITests : APITestsBase
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<IEnumerable<TicketOutput>>();
 
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result!, Has.Count.EqualTo(1));
-        Assert.That(result!.First().Show, Is.EqualTo("Show Name 02"));
-        Assert.That(result!.First().Artist, Is.EqualTo("Artist 02"));
-        Assert.That(result!.First().Sector, Is.EqualTo("Sector 01"));
-        Assert.That(result!.First().Quantity, Is.EqualTo(5));
-        Assert.That(result!.First().Date, Is.EqualTo(new DateTime(1995, 2, 1)));
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(1); 
+        result.First().Show.ShouldBe("Show Name 02");
+        result.First().Artist.ShouldBe("Artist 02");
+        result.First().Sector.ShouldBe("Sector 01");
+        result.First().Quantity.ShouldBe(5);
+        result.First().Date.ShouldBeEquivalentTo(new DateTime(1995, 2, 1));
     }
     */
 }

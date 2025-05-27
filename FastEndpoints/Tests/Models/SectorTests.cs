@@ -1,5 +1,6 @@
 ﻿using Models;
 using NUnit.Framework;
+using Shouldly;
 
 namespace Tests.Models;
 
@@ -11,10 +12,9 @@ public class SectorTests
     {
         var sector = Sector.Create(1, "Test", 10, 5);
 
-        Assert.That(() => sector.UpdateAvailableSpots(50),
-            Throws.InvalidOperationException
-                .With.Message.EqualTo("Not enough available spots on Sector Test")
-        );
+        var action = () => sector.UpdateAvailableSpots(50);
+        
+        action.ShouldThrow<InvalidOperationException>("Not enough available spots on Sector Test");
     }
 
     [Test]
@@ -24,6 +24,6 @@ public class SectorTests
 
         sector.UpdateAvailableSpots(5);
 
-        Assert.That(sector.AvailableSpots, Is.EqualTo(45));
+        sector.AvailableSpots.ShouldBe(45);
     }
 }
