@@ -3,7 +3,7 @@ using Persistence;
 
 namespace API.Features.Shows.GetShows;
 
-internal sealed class Endpoint : EndpointWithoutRequest<List<Response>>
+public class Endpoint : EndpointWithoutRequest<List<Response>, Mapper>
 {
     private readonly FastTicketsDB _fastTicketsDB;
 
@@ -21,7 +21,7 @@ internal sealed class Endpoint : EndpointWithoutRequest<List<Response>>
     public override async Task HandleAsync(CancellationToken cancellationToken)
     {
         var response = await _fastTicketsDB.Shows
-            .Select(s => new Response(s))
+            .Select(s => Map.FromEntity(s))
             .ToListAsync(cancellationToken: cancellationToken);
 
         await SendOkAsync(response);

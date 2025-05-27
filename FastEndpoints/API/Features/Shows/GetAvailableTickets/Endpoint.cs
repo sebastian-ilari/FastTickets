@@ -4,7 +4,7 @@ using Persistence;
 
 namespace API.Features.Shows.GetAvailableTickets;
 
-internal sealed class Endpoint : Endpoint<Request, Results<Ok<List<Response>>, BadRequest<string>>>
+public class Endpoint : Endpoint<Request, Results<Ok<List<Response>>, BadRequest<string>>, Mapper>
 {
     private readonly FastTicketsDB _fastTicketsDB;
 
@@ -29,7 +29,7 @@ internal sealed class Endpoint : Endpoint<Request, Results<Ok<List<Response>>, B
 
         await SendResultAsync(TypedResults.Ok(await _fastTicketsDB.Sectors
             .Where(s => s.ShowId == request.ShowId)
-            .Select(s => new Response(s))
+            .Select(s => Map.FromEntity(s))
             .ToListAsync(cancellationToken: cancellationToken)));
     }
 }
