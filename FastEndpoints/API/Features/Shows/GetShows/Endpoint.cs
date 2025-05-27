@@ -3,7 +3,7 @@ using Persistence;
 
 namespace API.Features.Shows.GetShows;
 
-public class Endpoint : EndpointWithoutRequest<List<Response>, Mapper>
+public class Endpoint : EndpointWithoutRequest<List<GetShowsResponse>, Mapper>
 {
     private readonly FastTicketsDB _fastTicketsDB;
 

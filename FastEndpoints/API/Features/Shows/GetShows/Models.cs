@@ -1,6 +1,6 @@
 ﻿namespace API.Features.Shows.GetShows;
 
-public class Response
+public class GetShowsResponse
 {
     public int Id { get; set; }
     public string Artist { get; set; } = null!;

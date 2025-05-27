@@ -4,7 +4,7 @@ using Persistence;
 
 namespace API.Features.Shows.GetAvailableTickets;
 
-public class Endpoint : Endpoint<Request, Results<Ok<List<Response>>, BadRequest<string>>, Mapper>
+public class Endpoint : Endpoint<Request, Results<Ok<List<GetAvailableTicketsResponse>>, BadRequest<string>>, Mapper>
 {
     private readonly FastTicketsDB _fastTicketsDB;
 

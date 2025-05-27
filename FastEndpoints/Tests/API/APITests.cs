@@ -1,9 +1,11 @@
-﻿using NUnit.Framework;
+﻿using API.Features.Shows.GetAvailableTickets;
+using API.Features.Shows.GetShows;
+using NUnit.Framework;
 using Shouldly;
 using System.Net;
 using System.Net.Http.Json;
 
-namespace Tests.Api;
+namespace Tests.API;
 
 [TestFixture]
 public class APITests : APITestsBase
@@ -14,7 +16,7 @@ public class APITests : APITestsBase
         var response = await _client.GetAsync("/fast-tickets/shows");
         
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<List<API.Features.Shows.GetShows.Response>>();
+        var result = await response.Content.ReadFromJsonAsync<List<GetShowsResponse>>();
 
         result.ShouldNotBeNull();
         result.Count().ShouldBe(2);
@@ -38,7 +40,7 @@ public class APITests : APITestsBase
         var response = await _client.GetAsync("/fast-tickets/show/2/tickets");
 
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<IEnumerable<API.Features.Shows.GetAvailableTickets.Response>> ();
+        var result = await response.Content.ReadFromJsonAsync<IEnumerable<GetAvailableTicketsResponse>>();
 
         result.ShouldNotBeNull();
         result.Count().ShouldBe(2);
