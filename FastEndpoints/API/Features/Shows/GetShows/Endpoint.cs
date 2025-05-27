@@ -14,7 +14,7 @@ public class Endpoint : EndpointWithoutRequest<List<GetShowsResponse>, Mapper>
 
     public override void Configure()
     {
-        Get("/fast-tickets/shows");
+        Get("shows");
         AllowAnonymous();
     }
 

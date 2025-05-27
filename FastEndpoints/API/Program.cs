@@ -22,7 +22,10 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddFastEndpoints();
 
 var app = builder.Build();
-app.UseFastEndpoints();
+app.UseFastEndpoints(c =>
+{
+    c.Endpoints.RoutePrefix = "fast-tickets";
+});
 app.Run();
 
 public partial class Program { }

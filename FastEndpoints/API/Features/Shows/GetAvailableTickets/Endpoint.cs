@@ -15,7 +15,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<GetAvailableTicketsRes
 
     public override void Configure()
     {
-        Get("/fast-tickets/show/{ShowId}/tickets");
+        Get("show/{ShowId}/tickets");
         AllowAnonymous();
     }
 
