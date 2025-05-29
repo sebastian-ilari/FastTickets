@@ -32,21 +32,25 @@ public static class FastTicketsEndpoints
     {
         var show = await db.Shows.FindAsync(showId);
         if (show == null)
+        {
             return TypedResults.NotFound($"Show {showId} not found");
+        }
 
         return TypedResults.Ok(await db.Sectors.Where(s => s.ShowId == showId)
             .Select(s => new SectorOutput(s)).ToListAsync());
     }
 
-    static async Task<IResult> BuyTicket(int showId, BuyTicketsRequest request, ITicketService ticketService)
+    static async Task<IResult> BuyTicket(int showId, BuyTicketRequest request, ITicketService ticketService)
     {
         if (request.Quantity <= 0)
+        {
             return TypedResults.BadRequest("Quantity must be greater than 0");
+        }
 
         var ticket = await ticketService.BuyTicket(showId, request.SectorId, request.Quantity);
         var ticketOutput = new TicketOutput(ticket);
 
-        return TypedResults.Created($"/fast-tickets/{showId}/tickets", ticketOutput);
+        return TypedResults.Created($"/fast-tickets/show/{showId}/tickets", ticketOutput);
     }
 
     static async Task<IResult> GetTickets(FastTicketsDB db) => 

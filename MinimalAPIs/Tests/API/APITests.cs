@@ -55,7 +55,7 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_QuantityIsZero_ReturnsBadRequest()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketsRequest(2, 0));
+        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketRequest(2, 0));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
@@ -63,7 +63,7 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_QuantityIsNegative_ReturnsBadRequest()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketsRequest(2, -5));
+        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketRequest(2, -5));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
@@ -71,7 +71,7 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_ShowNotFound_ReturnsInternalServerError()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/200/tickets", new BuyTicketsRequest(2, 1));
+        var response = await _client.PostAsJsonAsync("/fast-tickets/show/200/tickets", new BuyTicketRequest(2, 1));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
     }
@@ -79,7 +79,7 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_SectorNotFound_ReturnsInternalServerError()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketsRequest(200, 1));
+        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketRequest(200, 1));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
     }
@@ -87,7 +87,7 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_NoTicketsAvailable_ReturnsInternalServerError()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketsRequest(2, 150));
+        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketRequest(2, 150));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
     }
@@ -95,7 +95,7 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_TicketsAvailable_ReturnsTicket()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketsRequest(2, 5));
+        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketRequest(2, 5));
 
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<TicketOutput>();
