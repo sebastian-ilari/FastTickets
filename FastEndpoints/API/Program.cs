@@ -1,5 +1,7 @@
 global using FastEndpoints;
+global using FluentValidation;
 
+using API.Services;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.DBFactories;
@@ -21,11 +23,14 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddFastEndpoints();
 
+builder.Services.AddScoped<ITicketService, TicketService>();
+
 var app = builder.Build();
-app.UseFastEndpoints(c =>
-{
-    c.Endpoints.RoutePrefix = "fast-tickets";
-});
+app.UseDefaultExceptionHandler()
+   .UseFastEndpoints(c =>
+   {
+       c.Endpoints.RoutePrefix = "fast-tickets";
+   });
 app.Run();
 
 public partial class Program { }
