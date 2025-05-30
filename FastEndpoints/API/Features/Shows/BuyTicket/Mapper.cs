@@ -2,9 +2,9 @@
 
 namespace API.Features.Shows.BuyTicket;
 
-public class Mapper : Mapper<object, BuyTicketResponse, Ticket>
+public class Mapper : Mapper<object, Response, Ticket>
 {
-    public override BuyTicketResponse FromEntity(Ticket ticket) => new()
+    public override Response FromEntity(Ticket ticket) => new()
     {
         Id = ticket.Id,
         Show = ticket.Show?.Name ?? string.Empty,

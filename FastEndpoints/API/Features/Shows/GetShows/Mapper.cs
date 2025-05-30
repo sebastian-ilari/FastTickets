@@ -2,9 +2,9 @@
 
 namespace API.Features.Shows.GetShows;
 
-public class Mapper : Mapper<object, GetShowsResponse, Show>
+public class Mapper : Mapper<object, Response, Show>
 {
-    public override GetShowsResponse FromEntity(Show show) => new()
+    public override Response FromEntity(Show show) => new()
     {
         Id = show.Id,
         Artist = show.Artist,

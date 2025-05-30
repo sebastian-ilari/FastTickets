@@ -1,13 +1,13 @@
 ﻿namespace API.Features.Shows.BuyTicket;
 
-public class BuyTicketRequest(int showId, int sectorId, int quantity)
+public class Request(int showId, int sectorId, int quantity)
 {
     public int ShowId { get; set; } = showId;
     public int SectorId { get; set; } = sectorId;
     public int Quantity { get; set; } = quantity;
 }
 
-public class Validator : Validator<BuyTicketRequest>
+public class Validator : Validator<Request>
 {
     public Validator()
     {
@@ -17,7 +17,7 @@ public class Validator : Validator<BuyTicketRequest>
     }
 }
 
-public class BuyTicketResponse
+public class Response
 {
     public int Id { get; set; }
     public string Show { get; set; } = null!;

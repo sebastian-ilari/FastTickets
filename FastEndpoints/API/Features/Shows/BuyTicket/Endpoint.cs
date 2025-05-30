@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace API.Features.Shows.BuyTicket;
 
-public class Endpoint : Endpoint<BuyTicketRequest, Results<Created<BuyTicketResponse>, BadRequest<string>>, Mapper>
+public class Endpoint : Endpoint<Request, Results<Created<Response>, BadRequest<string>>, Mapper>
 {
     private readonly ITicketService _ticketService;
 
@@ -18,7 +18,7 @@ public class Endpoint : Endpoint<BuyTicketRequest, Results<Created<BuyTicketResp
         AllowAnonymous();
     }
 
-    public override async Task HandleAsync(BuyTicketRequest request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(Request request, CancellationToken cancellationToken)
     {
         var ticket = await _ticketService.BuyTicket(request.ShowId, request.SectorId, request.Quantity);
 

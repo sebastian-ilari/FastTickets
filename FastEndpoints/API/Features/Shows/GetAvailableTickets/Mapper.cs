@@ -2,9 +2,9 @@
 
 namespace API.Features.Shows.GetAvailableTickets;
 
-public class Mapper : Mapper<object, GetAvailableTicketsResponse, Sector>
+public class Mapper : Mapper<object, Response, Sector>
 {
-    public override GetAvailableTicketsResponse FromEntity(Sector sector) => new()
+    public override Response FromEntity(Sector sector) => new()
     {
         Id = sector.Id,
         Name = sector.Name,

@@ -1,6 +1,6 @@
 ﻿namespace API.Features.Tickets.GetTickets;
 
-public class GetTicketsResponse
+public class Response
 {
     public int Id { get; set; }
     public string Show { get; set; } = null!;

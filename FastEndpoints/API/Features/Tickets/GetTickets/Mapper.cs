@@ -2,9 +2,9 @@
 
 namespace API.Features.Tickets.GetTickets;
 
-public class Mapper : Mapper<object, GetTicketsResponse, Ticket>
+public class Mapper : Mapper<object, Response, Ticket>
 {
-    public override GetTicketsResponse FromEntity(Ticket ticket) => new()
+    public override Response FromEntity(Ticket ticket) => new()
     {
         Id = ticket.Id,
         Show = ticket.Show?.Name ?? string.Empty,

@@ -5,7 +5,7 @@ public class Request
     public int ShowId { get; set; }
 }
 
-public class GetAvailableTicketsResponse
+public class Response
 {
     public int Id { get; set; }
     public string Name { get; set; } = null!;

@@ -1,11 +1,12 @@
-﻿using API.Features.Shows.BuyTicket;
-using API.Features.Shows.GetAvailableTickets;
-using API.Features.Shows.GetShows;
-using API.Features.Tickets.GetTickets;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using Shouldly;
 using System.Net;
 using System.Net.Http.Json;
+using BuyTicketResponse = API.Features.Shows.BuyTicket.Response;
+using BuyTicketRequest = API.Features.Shows.BuyTicket.Request;
+using GetAvailableTicketsResponse = API.Features.Shows.GetAvailableTickets.Response;
+using GetShowsResponse = API.Features.Shows.GetShows.Response;
+using GetTicketsResponse = API.Features.Tickets.GetTickets.Response;
 
 namespace Tests.API;
 
