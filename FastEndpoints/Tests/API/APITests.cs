@@ -1,6 +1,7 @@
 ﻿using API.Features.Shows.BuyTicket;
 using API.Features.Shows.GetAvailableTickets;
 using API.Features.Shows.GetShows;
+using API.Features.Tickets.GetTickets;
 using NUnit.Framework;
 using Shouldly;
 using System.Net;
@@ -110,14 +111,13 @@ public class APITests : APITestsBase
         result.Date.ShouldBeEquivalentTo(new DateTime(1995, 2, 1));
     }
 
-    /*
     [Test]
     public async Task GetTickets_TicketsAvailable_ReturnsTicket()
     {
         var response = await _client.GetAsync("/fast-tickets/tickets");
 
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<IEnumerable<TicketOutput>>();
+        var result = await response.Content.ReadFromJsonAsync<IEnumerable<GetTicketsResponse>>();
 
         result.ShouldNotBeNull();
         result.Count().ShouldBe(1); 
@@ -127,5 +127,4 @@ public class APITests : APITestsBase
         result.First().Quantity.ShouldBe(5);
         result.First().Date.ShouldBeEquivalentTo(new DateTime(1995, 2, 1));
     }
-    */
 }
