@@ -1,4 +1,4 @@
-﻿using Models.Output;
+﻿using Models.Dtos;
 using Models.Request;
 using NUnit.Framework;
 using System.Net;
@@ -15,7 +15,7 @@ public class APITests : APITestsBase
         var response = await _client.GetAsync("/fast-tickets/shows");
         
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<IEnumerable<ShowOutput>>();
+        var result = await response.Content.ReadFromJsonAsync<IEnumerable<ShowDto>>();
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result!, Has.Count.EqualTo(2));
@@ -39,7 +39,7 @@ public class APITests : APITestsBase
         var response = await _client.GetAsync("/fast-tickets/show/2/tickets");
 
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<IEnumerable<SectorOutput>>();
+        var result = await response.Content.ReadFromJsonAsync<IEnumerable<SectorDto>>();
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result!, Has.Count.EqualTo(2));
@@ -98,7 +98,7 @@ public class APITests : APITestsBase
         var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketRequest(2, 5));
 
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<TicketOutput>();
+        var result = await response.Content.ReadFromJsonAsync<TicketDto>();
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result!.Show, Is.EqualTo("Show Name 02"));
@@ -114,7 +114,7 @@ public class APITests : APITestsBase
         var response = await _client.GetAsync("/fast-tickets/tickets");
 
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<IEnumerable<TicketOutput>>();
+        var result = await response.Content.ReadFromJsonAsync<IEnumerable<TicketDto>>();
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result!, Has.Count.EqualTo(1));

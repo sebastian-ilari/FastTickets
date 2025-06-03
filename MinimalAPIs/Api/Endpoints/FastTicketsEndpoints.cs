@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Models.Output;
+using Models.Dtos;
 using Models.Request;
 using Persistence;
 using Services;
@@ -25,7 +25,7 @@ public static class FastTicketsEndpoints
 
     static async Task<IResult> GetShows(FastTicketsDB db)
     {
-        return TypedResults.Ok(await db.Shows.Select(s => new ShowOutput(s)).ToListAsync());
+        return TypedResults.Ok(await db.Shows.Select(s => new ShowDto(s)).ToListAsync());
     }
 
     static async Task<IResult> GetAvailableTickets(int showId, FastTicketsDB db)
@@ -37,7 +37,7 @@ public static class FastTicketsEndpoints
         }
 
         return TypedResults.Ok(await db.Sectors.Where(s => s.ShowId == showId)
-            .Select(s => new SectorOutput(s)).ToListAsync());
+            .Select(s => new SectorDto(s)).ToListAsync());
     }
 
     static async Task<IResult> BuyTicket(int showId, BuyTicketRequest request, ITicketService ticketService)
@@ -48,15 +48,15 @@ public static class FastTicketsEndpoints
         }
 
         var ticket = await ticketService.BuyTicket(showId, request.SectorId, request.Quantity);
-        var ticketOutput = new TicketOutput(ticket);
+        var ticketDto = new TicketDto(ticket);
 
-        return TypedResults.Created($"/fast-tickets/show/{showId}/tickets", ticketOutput);
+        return TypedResults.Created($"/fast-tickets/show/{showId}/tickets", ticketDto);
     }
 
     static async Task<IResult> GetTickets(FastTicketsDB db) => 
         TypedResults.Ok(await db.Tickets
             .Include(t => t.Show)
             .Include(t => t.Sector)
-            .Select(t => new TicketOutput(t))
+            .Select(t => new TicketDto(t))
             .ToListAsync());
 }
