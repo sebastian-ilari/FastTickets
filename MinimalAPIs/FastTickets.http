@@ -17,6 +17,10 @@ Content-Type: application/json
   "quantity": 50
 }
 
-### Get bought Tickets
+### Get Tickets
 
 GET {{HostAddress}}/tickets
+
+### Get Ticket by Id
+
+GET {{HostAddress}}/ticket/1

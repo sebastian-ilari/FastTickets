@@ -51,6 +51,47 @@ public class APITests : APITestsBase
         Assert.That(result!.ToArray()[1].AvailableSpots, Is.EqualTo(200));
     }
 
+    [Test, Order(1)]
+    public async Task GetTickets_TicketsAvailable_ReturnsTicket()
+    {
+        var response = await _client.GetAsync("/fast-tickets/tickets");
+
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<IEnumerable<TicketDto>>();
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result!, Has.Count.EqualTo(1));
+        Assert.That(result!.First().Show, Is.EqualTo("Show Name 01"));
+        Assert.That(result!.First().Artist, Is.EqualTo("Artist 01"));
+        Assert.That(result!.First().Sector, Is.EqualTo("Sector 01"));
+        Assert.That(result!.First().Quantity, Is.EqualTo(10));
+        Assert.That(result!.First().Date, Is.EqualTo(new DateTime(1990, 1, 1)));
+    }
+
+    [Test]
+    public async Task GetTicket_TicketIsNotFound_ReturnsNotFound()
+    {
+        var response = await _client.GetAsync("/fast-tickets/ticket/5000");
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+    }
+
+    [Test, Order(2)]
+    public async Task GetTicket_TicketIsFound_ReturnsTicket()
+    {
+        var response = await _client.GetAsync("/fast-tickets/ticket/1");
+
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<TicketDto>();
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result!.Show, Is.EqualTo("Show Name 01"));
+        Assert.That(result.Artist, Is.EqualTo("Artist 01"));
+        Assert.That(result.Sector, Is.EqualTo("Sector 01"));
+        Assert.That(result.Quantity, Is.EqualTo(10));
+        Assert.That(result.Date, Is.EqualTo(new DateTime(1990, 1, 1)));
+    }
+
     [Test]
     public async Task BuyTicket_QuantityIsZero_ReturnsBadRequest()
     {
@@ -105,22 +146,5 @@ public class APITests : APITestsBase
         Assert.That(result!.Sector, Is.EqualTo("Sector 01"));
         Assert.That(result!.Quantity, Is.EqualTo(5));
         Assert.That(result!.Date, Is.EqualTo(new DateTime(1995, 2, 1)));
-    }
-
-    [Test]
-    public async Task GetTickets_TicketsAvailable_ReturnsTicket()
-    {
-        var response = await _client.GetAsync("/fast-tickets/tickets");
-
-        response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<IEnumerable<TicketDto>>();
-
-        Assert.That(result, Is.Not.Null);
-        Assert.That(result!, Has.Count.EqualTo(1));
-        Assert.That(result!.First().Show, Is.EqualTo("Show Name 02"));
-        Assert.That(result!.First().Artist, Is.EqualTo("Artist 02"));
-        Assert.That(result!.First().Sector, Is.EqualTo("Sector 01"));
-        Assert.That(result!.First().Quantity, Is.EqualTo(5));
-        Assert.That(result!.First().Date, Is.EqualTo(new DateTime(1995, 2, 1)));
     }
 }

@@ -18,14 +18,13 @@ public static class FastTicketsEndpoints
         group.MapGet("/show/{showId:int}/tickets", GetAvailableTickets);
         group.MapPost("/show/{showId:int}/tickets", BuyTicket);
         group.MapGet("/tickets", GetTickets);
+        group.MapGet("/ticket/{ticketId:int}", GetTicket);
 
         return group;
     }
 
-    static async Task<IResult> GetShows(FastTicketsDB db)
-    {
-        return TypedResults.Ok(await db.Shows.Select(s => new ShowDto(s)).ToListAsync());
-    }
+    static async Task<IResult> GetShows(FastTicketsDB db) => 
+        TypedResults.Ok(await db.Shows.Select(s => new ShowDto(s)).ToListAsync());
 
     static async Task<IResult> GetAvailableTickets(FastTicketsDB db, int showId)
     {
@@ -58,4 +57,21 @@ public static class FastTicketsEndpoints
             .Include(t => t.Sector)
             .Select(t => new TicketDto(t))
             .ToListAsync());
+
+    static async Task<IResult> GetTicket(FastTicketsDB db, int ticketId)
+    {
+        var ticket = await db.Tickets
+            .Include(t => t.Show)
+            .Include(t => t.Sector)
+            .FirstOrDefaultAsync(t => t.Id == ticketId);
+
+        if (ticket == null)
+        {
+            return TypedResults.NotFound($"Ticket {ticketId} not found");
+        }
+        else
+        {
+            return TypedResults.Ok(new TicketDto(ticket));
+        }
+    }
 }
