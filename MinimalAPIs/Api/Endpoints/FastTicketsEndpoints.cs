@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Models.Dtos;
 using Persistence;
 using Services;
@@ -28,7 +27,7 @@ public static class FastTicketsEndpoints
         return TypedResults.Ok(await db.Shows.Select(s => new ShowDto(s)).ToListAsync());
     }
 
-    static async Task<IResult> GetAvailableTickets(int showId, FastTicketsDB db)
+    static async Task<IResult> GetAvailableTickets(FastTicketsDB db, int showId)
     {
         var show = await db.Shows.FindAsync(showId);
         if (show == null)
@@ -40,8 +39,7 @@ public static class FastTicketsEndpoints
             .Select(s => new SectorDto(s)).ToListAsync());
     }
 
-    static async Task<IResult> BuyTicket(int showId, TicketForCreationDto ticketForCreationDto, 
-        ITicketService ticketService)
+    static async Task<IResult> BuyTicket(ITicketService ticketService, int showId, TicketForCreationDto ticketForCreationDto)
     {
         if (ticketForCreationDto.Quantity <= 0)
         {
