@@ -28,5 +28,11 @@ public class SeedTestData : ISeedData
         ]);
 
         await db.SaveChangesAsync();
+
+        var firstSectorId = firstShow.Sectors.First().Id;
+        var ticket = Ticket.Create(firstShow.Id, firstSectorId, 10);
+
+        await db.Tickets.AddAsync(ticket);
+        await db.SaveChangesAsync();
     }
 }

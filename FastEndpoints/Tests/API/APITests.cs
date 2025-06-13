@@ -56,6 +56,47 @@ public class APITests : APITestsBase
         result!.ToArray()[1].AvailableSpots.ShouldBe(200);
     }
 
+    [Test, Order(1)]
+    public async Task GetTickets_TicketsAvailable_ReturnsTicket()
+    {
+        var response = await _client.GetAsync("/fast-tickets/tickets");
+
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<IEnumerable<GetTicketsResponse>>();
+
+        result.ShouldNotBeNull();
+        result.Count().ShouldBe(1);
+        result.First().Show.ShouldBe("Show Name 01");
+        result.First().Artist.ShouldBe("Artist 01");
+        result.First().Sector.ShouldBe("Sector 01");
+        result.First().Quantity.ShouldBe(10);
+        result.First().Date.ShouldBeEquivalentTo(new DateTime(1990, 1, 1));
+    }
+
+    [Test]
+    public async Task GetTicket_TicketIsNotFound_ReturnsNotFound()
+    {
+        var response = await _client.GetAsync("/fast-tickets/ticket/5000");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
+    [Test, Order(2)]
+    public async Task GetTicket_TicketIsFound_ReturnsTicket()
+    {
+        var response = await _client.GetAsync("/fast-tickets/ticket/1");
+
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<GetTicketsResponse>();
+
+        result.ShouldNotBeNull();
+        result.Show.ShouldBe("Show Name 01");
+        result.Artist.ShouldBe("Artist 01");
+        result.Sector.ShouldBe("Sector 01");
+        result.Quantity.ShouldBe(10);
+        result.Date.ShouldBeEquivalentTo(new DateTime(1990, 1, 1));
+    }
+
     [Test]
     public async Task BuyTicket_QuantityIsZero_ReturnsBadRequest()
     {
@@ -110,22 +151,5 @@ public class APITests : APITestsBase
         result.Sector.ShouldBe("Sector 01");
         result.Quantity.ShouldBe(5);
         result.Date.ShouldBeEquivalentTo(new DateTime(1995, 2, 1));
-    }
-
-    [Test]
-    public async Task GetTickets_TicketsAvailable_ReturnsTicket()
-    {
-        var response = await _client.GetAsync("/fast-tickets/tickets");
-
-        response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<IEnumerable<GetTicketsResponse>>();
-
-        result.ShouldNotBeNull();
-        result.Count().ShouldBe(1); 
-        result.First().Show.ShouldBe("Show Name 02");
-        result.First().Artist.ShouldBe("Artist 02");
-        result.First().Sector.ShouldBe("Sector 01");
-        result.First().Quantity.ShouldBe(5);
-        result.First().Date.ShouldBeEquivalentTo(new DateTime(1995, 2, 1));
     }
 }
