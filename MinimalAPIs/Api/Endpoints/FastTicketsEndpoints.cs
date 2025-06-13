@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Models.Dtos;
-using Models.Request;
 using Persistence;
 using Services;
 
@@ -40,14 +40,15 @@ public static class FastTicketsEndpoints
             .Select(s => new SectorDto(s)).ToListAsync());
     }
 
-    static async Task<IResult> BuyTicket(int showId, BuyTicketRequest request, ITicketService ticketService)
+    static async Task<IResult> BuyTicket(int showId, TicketForCreationDto ticketForCreationDto, 
+        ITicketService ticketService)
     {
-        if (request.Quantity <= 0)
+        if (ticketForCreationDto.Quantity <= 0)
         {
             return TypedResults.BadRequest("Quantity must be greater than 0");
         }
 
-        var ticket = await ticketService.BuyTicket(showId, request.SectorId, request.Quantity);
+        var ticket = await ticketService.BuyTicket(showId, ticketForCreationDto.SectorId, ticketForCreationDto.Quantity);
         var ticketDto = new TicketDto(ticket);
 
         return TypedResults.Created($"/fast-tickets/show/{showId}/tickets", ticketDto);
