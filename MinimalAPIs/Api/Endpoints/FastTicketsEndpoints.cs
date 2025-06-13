@@ -18,7 +18,7 @@ public static class FastTicketsEndpoints
         group.MapGet("/show/{showId:int}/tickets", GetAvailableTickets);
         group.MapPost("/show/{showId:int}/tickets", BuyTicket);
         group.MapGet("/tickets", GetTickets);
-        group.MapGet("/ticket/{ticketId:int}", GetTicket);
+        group.MapGet("/ticket/{ticketId:int}", GetTicket).WithName("GetTicket");
 
         return group;
     }
@@ -48,7 +48,7 @@ public static class FastTicketsEndpoints
         var ticket = await ticketService.BuyTicket(showId, ticketForCreationDto.SectorId, ticketForCreationDto.Quantity);
         var ticketDto = new TicketDto(ticket);
 
-        return TypedResults.Created($"/fast-tickets/show/{showId}/tickets", ticketDto);
+        return TypedResults.CreatedAtRoute(ticketDto, "GetTicket", new { ticketId = ticket.Id });
     }
 
     static async Task<IResult> GetTickets(FastTicketsDB db) => 
