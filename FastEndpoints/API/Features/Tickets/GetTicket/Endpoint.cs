@@ -17,6 +17,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<Response>, BadRequest<strin
     {
         Get("ticket/{ticketId}");
         AllowAnonymous();
+        Description(x => x.WithName("GetTicket"));
     }
 
     public override async Task HandleAsync(Request request, CancellationToken cancellationToken)

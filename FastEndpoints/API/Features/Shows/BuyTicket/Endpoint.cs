@@ -22,6 +22,7 @@ public class Endpoint : Endpoint<Request, Results<Created<Response>, BadRequest<
     {
         var ticket = await _ticketService.BuyTicket(request.ShowId, request.SectorId, request.Quantity);
 
-        await SendResultAsync(TypedResults.Created($"/fast-tickets/show/{request.ShowId}/tickets", Map.FromEntity(ticket)));
+        await SendResultAsync(TypedResults.CreatedAtRoute(Map.FromEntity(ticket), "GetTicket", 
+            new { ticketId = ticket.Id }));
     }
 }
