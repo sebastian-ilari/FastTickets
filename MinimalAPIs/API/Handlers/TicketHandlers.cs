@@ -3,30 +3,11 @@ using Models.Dtos;
 using Persistence;
 using Services;
 
-namespace Api.Endpoints;
+namespace Api.Handlers;
 
-public static class FastTicketsEndpoints
+internal static class TicketHandlers
 {
-    public static void RegisterFastTicketsEndpoints(this WebApplication app)
-    {
-        app.MapGroup("/fast-tickets").MapEndpoints();
-    }
-
-    static RouteGroupBuilder MapEndpoints(this RouteGroupBuilder group)
-    {
-        group.MapGet("/shows", GetShows);
-        group.MapGet("/show/{showId:int}/tickets", GetAvailableTickets);
-        group.MapPost("/show/{showId:int}/tickets", BuyTicket);
-        group.MapGet("/tickets", GetTickets);
-        group.MapGet("/ticket/{ticketId:int}", GetTicket).WithName("GetTicket");
-
-        return group;
-    }
-
-    static async Task<IResult> GetShows(FastTicketsDB db) => 
-        TypedResults.Ok(await db.Shows.Select(s => new ShowDto(s)).ToListAsync());
-
-    static async Task<IResult> GetAvailableTickets(FastTicketsDB db, int showId)
+    internal static async Task<IResult> GetAvailableTickets(FastTicketsDB db, int showId)
     {
         var show = await db.Shows.FindAsync(showId);
         if (show == null)
@@ -38,7 +19,7 @@ public static class FastTicketsEndpoints
             .Select(s => new SectorDto(s)).ToListAsync());
     }
 
-    static async Task<IResult> BuyTicket(ITicketService ticketService, int showId, TicketForCreationDto ticketForCreationDto)
+    internal static async Task<IResult> BuyTicket(ITicketService ticketService, int showId, TicketForCreationDto ticketForCreationDto)
     {
         if (ticketForCreationDto.Quantity <= 0)
         {
@@ -51,14 +32,14 @@ public static class FastTicketsEndpoints
         return TypedResults.CreatedAtRoute(ticketDto, "GetTicket", new { ticketId = ticket.Id });
     }
 
-    static async Task<IResult> GetTickets(FastTicketsDB db) => 
+    internal static async Task<IResult> GetTickets(FastTicketsDB db) => 
         TypedResults.Ok(await db.Tickets
             .Include(t => t.Show)
             .Include(t => t.Sector)
             .Select(t => new TicketDto(t))
             .ToListAsync());
 
-    static async Task<IResult> GetTicket(FastTicketsDB db, int ticketId)
+    internal static async Task<IResult> GetTicket(FastTicketsDB db, int ticketId)
     {
         var ticket = await db.Tickets
             .Include(t => t.Show)

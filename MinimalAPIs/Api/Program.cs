@@ -1,4 +1,4 @@
-using Api.Endpoints;
+using API.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.DBFactories;
@@ -27,7 +27,10 @@ builder.Services.ConfigureHttpJsonOptions(options => {
 
 var app = builder.Build();
 
-FastTicketsEndpoints.RegisterFastTicketsEndpoints(app);
+var appGroup = app.MapGroup("/fast-tickets");
+
+appGroup.RegisterShowEndpoints();
+appGroup.RegisterTicketEndpoints();
 
 app.Run();
 
