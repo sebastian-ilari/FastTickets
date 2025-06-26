@@ -7,12 +7,14 @@ namespace Api.Handlers;
 
 internal static class TicketHandlers
 {
-    internal static async Task<IResult> GetAvailableTickets(FastTicketsDB db, int showId)
+    internal static async Task<IResult> GetAvailableTickets(FastTicketsDB db, ILogger<SectorDto> logger, int showId)
     {
         var show = await db.Shows.FindAsync(showId);
         if (show == null)
         {
-            return TypedResults.NotFound($"Show {showId} not found");
+            string message = $"Show {showId} not found";
+            logger.LogError(message);
+            return TypedResults.NotFound(message);
         }
 
         return TypedResults.Ok(await db.Sectors.Where(s => s.ShowId == showId)

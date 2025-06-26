@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.DBFactories;
 using Services;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,7 +26,26 @@ builder.Services.ConfigureHttpJsonOptions(options => {
     options.SerializerOptions.IncludeFields = true;
 });
 
+builder.Services.AddProblemDetails();
+
 var app = builder.Build();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler();
+    /*
+     * Not needed after adding ProblemDetails
+    app.UseExceptionHandler(config =>
+    {
+        config.Run(async context =>
+        {
+            context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+            context.Response.ContentType = "text/html";
+            await context.Response.WriteAsync("An unexpected error occurred");
+        });
+    });
+    */
+}
 
 var appGroup = app.MapGroup("/fast-tickets");
 
