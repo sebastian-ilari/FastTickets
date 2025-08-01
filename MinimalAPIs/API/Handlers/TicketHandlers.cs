@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
 using Models.Dtos;
 using Persistence;
 using Services;
@@ -7,7 +8,8 @@ namespace Api.Handlers;
 
 internal static class TicketHandlers
 {
-    internal static async Task<IResult> GetAvailableTickets(FastTicketsDB db, ILogger<SectorDto> logger, int showId)
+    internal static async Task<Results<NotFound<string>, Ok<List<SectorDto>>>> GetAvailableTickets(FastTicketsDB db, 
+        ILogger<SectorDto> logger, int showId)
     {
         var show = await db.Shows.FindAsync(showId);
         if (show == null)
@@ -21,7 +23,8 @@ internal static class TicketHandlers
             .Select(s => new SectorDto(s)).ToListAsync());
     }
 
-    internal static async Task<IResult> BuyTicket(ITicketService ticketService, int showId, TicketForCreationDto ticketForCreationDto)
+    internal static async Task<Results<BadRequest<string>, CreatedAtRoute<TicketDto>>> BuyTicket(ITicketService ticketService, 
+        int showId, TicketForCreationDto ticketForCreationDto)
     {
         if (ticketForCreationDto.Quantity <= 0)
         {
@@ -34,14 +37,14 @@ internal static class TicketHandlers
         return TypedResults.CreatedAtRoute(ticketDto, "GetTicket", new { ticketId = ticket.Id });
     }
 
-    internal static async Task<IResult> GetTickets(FastTicketsDB db) => 
+    internal static async Task<Ok<List<TicketDto>>> GetTickets(FastTicketsDB db) => 
         TypedResults.Ok(await db.Tickets
             .Include(t => t.Show)
             .Include(t => t.Sector)
             .Select(t => new TicketDto(t))
             .ToListAsync());
 
-    internal static async Task<IResult> GetTicket(FastTicketsDB db, int ticketId)
+    internal static async Task<Results<NotFound<string>, Ok<TicketDto>>> GetTicket(FastTicketsDB db, int ticketId)
     {
         var ticket = await db.Tickets
             .Include(t => t.Show)

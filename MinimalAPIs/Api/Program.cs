@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Persistence;
 using Persistence.DBFactories;
 using Services;
-using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
