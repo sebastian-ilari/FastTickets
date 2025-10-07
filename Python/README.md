@@ -18,4 +18,4 @@ The API can then be reached in [this url](http://127.0.0.1:8000) and the Swagger
 
 ## Persistence
 
-The persistence is done in SQLite. The names for the different databases are taken from the [.env](.env) file.
+The application persistence is done in an In-memory SQLite database.
