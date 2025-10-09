@@ -4,6 +4,7 @@ from datetime import datetime
 
 
 class ShowBase(SQLModel):
+    id: int = Field()
     artist: str = Field()
     name: str = Field()
     venue: str = Field()
@@ -14,11 +15,8 @@ class Show(ShowBase, table=True):
 
     sectors: list["Sector"] = Relationship(back_populates="show")
 
-class ShowPublic(ShowBase):
-    id: int
-
-
 class SectorBase(SQLModel):
+    id: int = Field()
     name: str = Field()
     total_spots: int = Field(default=0)
     available_spots: int = Field(default=0)
@@ -30,13 +28,9 @@ class Sector(SectorBase, table=True):
 
     show: Show | None = Relationship(back_populates="sectors")
 
-class SectorPublic(SectorBase):
-    id: int
-
-
 # Models to avoid circular references in responses
-class ShowWithSectors(ShowPublic):
-    sectors: list[SectorPublic] = []
+class ShowWithSectors(ShowBase):
+    sectors: list[SectorBase] = []
 
-class SectorWithShow(SectorPublic):
-    show: ShowPublic | None = None
+class SectorWithShow(SectorBase):
+    show: ShowBase | None = None
