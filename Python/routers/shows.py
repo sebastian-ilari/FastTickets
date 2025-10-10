@@ -64,7 +64,7 @@ async def buy_tickets(show_id: int, buy_ticket_request: BuyTicketRequest, sessio
     if buy_ticket_request.quantity <= 0:
         raise HTTPException(status_code=400, detail="Quantity must be greater than 0")
 
-    sector = session.exec(select(Sector).where(Sector.id == buy_ticket_request.sector_id)).one()
+    sector = session.exec(select(Sector).where(Sector.id == buy_ticket_request.sector_id)).one_or_none()
     if not sector:
         raise HTTPException(status_code=500, detail=f"Sector {buy_ticket_request.sector_id} not found")
 
@@ -72,10 +72,10 @@ async def buy_tickets(show_id: int, buy_ticket_request: BuyTicketRequest, sessio
     if not show:
         raise HTTPException(status_code=404, detail=f"Show {show_id} not found")
 
-    sector.available_spots -= buy_ticket_request.quantity
-    if sector.available_spots < 0:
+    if sector.available_spots - buy_ticket_request.quantity < 0:
         raise HTTPException(status_code=400, detail=f"Not enough available spots in sector {sector.name}")
 
+    sector.available_spots -= buy_ticket_request.quantity
     session.add(sector)
     session.commit()
     session.refresh(sector)
