@@ -41,7 +41,7 @@ def test_get_shows(client: TestClient):
 
 
 def test_get_show_invalid_id_returns_404(client: TestClient):
-    response = client.get("/shows/999")
+    response = client.get("/show/999")
 
     assert response.status_code == 404
     assert response.json() == {"detail": "Show 999 not found"}
