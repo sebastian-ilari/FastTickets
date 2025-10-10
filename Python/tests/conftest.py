@@ -4,7 +4,7 @@ from sqlalchemy import StaticPool
 from sqlmodel import SQLModel, Session, create_engine
 
 from ..main import app
-from ..data.setup import get_session
+from ..data.setup import get_session, seed_data
 from ..data.seed_test import get_test_data
 
 
@@ -34,23 +34,14 @@ def session_fixture():
 
 @pytest.fixture(name="client")  
 def client_fixture(session: Session):  
-
-    seeded_shows = get_test_data()
-
-    session.add_all(seeded_shows)
-    session.commit()
-
-    for show in seeded_shows:
-        session.refresh(show)
-        for sector in show.sectors:
-            session.refresh(sector)
+    seed_data(get_test_data(), session)
 
     def get_session_override():
         return session
 
     app.dependency_overrides[get_session] = get_session_override  
 
-    client = TestClient(app)  
+    client = TestClient(app)
     yield client
 
     app.dependency_overrides.clear()

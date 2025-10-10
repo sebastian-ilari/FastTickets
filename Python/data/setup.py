@@ -30,12 +30,15 @@ def get_session():
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
-def seed_data(shows: list[Show]):
-    with Session(engine) as session:
-        session.add_all(shows)
-        session.commit()
+def seed_data(shows: list[Show], session: Session):
+    session.add_all(shows)
+    session.commit()
 
-        for show in shows:
-            session.refresh(show)
-            for sector in show.sectors:
-                session.refresh(sector)        
+    for show in shows:
+        session.refresh(show)
+        for sector in show.sectors:
+            session.refresh(sector)        
+
+def seed_data_and_session(shows: list[Show]):
+    with Session(engine) as session:
+        seed_data(shows, session)
