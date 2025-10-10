@@ -25,7 +25,7 @@ async def get_shows(session: SessionDep):
         response_model=list[Sector],
         summary="Get sectors for a specific show",
         response_description="A list of sectors for the specified show",
-        responses={404: {"description": "Show not found"}},
+        responses={404: {"description": "Show {show_id} not found"}},
         tags=["shows"])
 async def get_show_sectors(show_id: int, session: SessionDep):
     """

@@ -1,9 +1,9 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
-from .data.setup import create_db_and_tables, seed_data
-from .routers import shows
 
+from .data.setup import create_db_and_tables, seed_data
+from .routers import shows, tickets
 
 
 @asynccontextmanager
@@ -20,3 +20,4 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(shows.router)
+app.include_router(tickets.router)
