@@ -3,7 +3,7 @@ from sqlmodel import create_engine, SQLModel, Session
 from sqlmodel.pool import StaticPool
 from typing import Annotated
 
-from .seed import shows
+from ..models import Show
 
 """
 File database
@@ -16,9 +16,9 @@ engine = create_engine(sqlite_url, connect_args=connect_args)
 
 # In-memory database
 engine = create_engine(
-    "sqlite://",  
+    "sqlite://",
     connect_args={"check_same_thread": False},
-    poolclass=StaticPool,  
+    poolclass=StaticPool,
 )
 
 def create_db_and_tables():
@@ -30,7 +30,7 @@ def get_session():
 
 SessionDep = Annotated[Session, Depends(get_session)]
 
-def seed_data():
+def seed_data(shows: list[Show]):
     with Session(engine) as session:
         session.add_all(shows)
         session.commit()

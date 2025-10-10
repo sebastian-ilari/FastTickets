@@ -34,3 +34,11 @@ The API can then be reached in [this url](http://127.0.0.1:8000) and the Swagger
 ## Persistence
 
 The application persistence is done in an In-memory SQLite database.
+
+## API tests
+
+These tests also run in an In-memory SQLite database and can be run with the following command:
+
+```
+pytest -v
+```

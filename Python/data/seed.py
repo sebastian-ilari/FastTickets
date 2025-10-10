@@ -3,7 +3,7 @@ from datetime import datetime
 from ..models import Show, Sector
 
 
-shows = [
+shows_data = [
     Show(artist="Pink Floyd", name="Live at Pompeii", venue="Ancient Roman amphitheatre - Pompeii", date=datetime(1971, 10, 1), sectors=[
         Sector(name="Crew", total_spots=100, available_spots=100)
     ]),
