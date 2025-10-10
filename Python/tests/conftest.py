@@ -7,7 +7,6 @@ from sqlmodel import SQLModel, Session, create_engine
 from ..main import app
 from ..models import Sector, Show
 from ..data.setup import get_session
-from ..data.seed_test import shows_data
 
 
 @pytest.fixture(name="session")  
