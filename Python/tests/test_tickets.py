@@ -14,7 +14,7 @@ def test_get_tickets_one_ticket(client: TestClient):
         "sector_id": 2,
         "quantity": 10
     }
-    client.post("/show/2/tickets", json=buy_ticket_payload)
+    client.post("/shows/2/tickets", json=buy_ticket_payload)
 
     response = client.get("/tickets")
 
@@ -44,7 +44,7 @@ def test_get_ticket_by_id_ticket_found_returns_ticket(client: TestClient):
         "sector_id": 3,
         "quantity": 30
     }
-    buy_response = client.post("/show/2/tickets", json=buy_ticket_payload)
+    buy_response = client.post("/shows/2/tickets", json=buy_ticket_payload)
 
     response = client.get(f"/tickets/{buy_response.json()["id"]}")
 

@@ -41,15 +41,34 @@ def test_get_shows(client: TestClient):
     assert second_show["sectors"][1]["show_id"] == second_show["id"]
 
 
+# get_show
+def test_get_show_show_not_found_returns_404(client: TestClient):
+    response = client.get("/shows/999")
+
+    assert response.status_code == 404
+    assert response.json() == {"detail": "Show 999 not found"}
+
+def test_get_show_show_found_returns_show_without_sectors(client: TestClient):
+    response = client.get("/shows/2")
+
+    assert response.status_code == 200
+    assert response.json()["id"] is not None
+    assert response.json()["artist"] == "Test Artist 02"
+    assert response.json()["name"] == "Test Show 02"
+    assert response.json()["venue"] == "Test Venue 02"
+    assert response.json()["date"] == "1980-01-01T00:00:00"
+    assert response.json().get("sectors") is None
+
+
 # get_show_sectors
 def test_get_show_by_id_invalid_id_returns_404(client: TestClient):
-    response = client.get("/show/999")
+    response = client.get("/shows/999/sectors")
 
     assert response.status_code == 404
     assert response.json() == {"detail": "Show 999 not found"}
 
 def test_get_show_by_id_returns_sectors(client: TestClient):
-    response = client.get("/show/2")
+    response = client.get("/shows/2/sectors")
 
     assert response.status_code == 200
     assert isinstance(response.json(), list)
@@ -76,7 +95,7 @@ def test_buy_tickets_0_quantity_returns_400(client: TestClient):
         "sector_id": 2,
         "quantity": 0
     }
-    response = client.post("/show/2/tickets", json=buy_ticket_payload)
+    response = client.post("/shows/2/tickets", json=buy_ticket_payload)
 
     assert response.status_code == 400
     assert response.json() == {"detail": "Quantity must be greater than 0"}
@@ -86,7 +105,7 @@ def test_buy_tickets_negative_quantity_returns_400(client: TestClient):
         "sector_id": 2,
         "quantity": -5
     }
-    response = client.post("/show/2/tickets", json=buy_ticket_payload)
+    response = client.post("/shows/2/tickets", json=buy_ticket_payload)
 
     assert response.status_code == 400
     assert response.json() == {"detail": "Quantity must be greater than 0"}
@@ -96,7 +115,7 @@ def test_buy_tickets_sector_does_not_exist_returns_500(client: TestClient):
         "sector_id": 999,
         "quantity": 1
     }
-    response = client.post("/show/2/tickets", json=buy_ticket_payload)
+    response = client.post("/shows/2/tickets", json=buy_ticket_payload)
 
     assert response.status_code == 500
     assert response.json() == {"detail": "Sector 999 not found"}
@@ -106,7 +125,7 @@ def test_buy_tickets_show_does_not_exist_returns_500(client: TestClient):
         "sector_id": 2,
         "quantity": 1
     }
-    response = client.post("/show/999/tickets", json=buy_ticket_payload)
+    response = client.post("/shows/999/tickets", json=buy_ticket_payload)
 
     assert response.status_code == 404
     assert response.json() == {"detail": "Show 999 not found"}
@@ -116,7 +135,7 @@ def test_buy_tickets_not_enough_available_tickets_returns_400(client: TestClient
         "sector_id": 2,
         "quantity": 200
     }
-    response = client.post("/show/2/tickets", json=buy_ticket_payload)
+    response = client.post("/shows/2/tickets", json=buy_ticket_payload)
 
     assert response.status_code == 400
     assert response.json() == {"detail": "Not enough available spots in sector Test Sector 02"}
@@ -126,11 +145,11 @@ def test_buy_tickets_not_enough_available_tickets_show_is_not_updated(client: Te
         "sector_id": 2,
         "quantity": 200
     }
-    response = client.post("/show/2/tickets", json=buy_ticket_payload)
+    response = client.post("/shows/2/tickets", json=buy_ticket_payload)
 
     assert response.status_code == 400
 
-    response = client.get("/show/2")
+    response = client.get("/shows/2/sectors")
 
     assert response.status_code == 200
 
@@ -143,7 +162,7 @@ def test_buy_tickets_returns_ticket(client: TestClient):
         "sector_id": 2,
         "quantity": 10
     }
-    response = client.post("/show/2/tickets", json=buy_ticket_payload)
+    response = client.post("/shows/2/tickets", json=buy_ticket_payload)
 
     assert response.status_code == 200
     assert response.json()["id"] is not None
@@ -159,9 +178,9 @@ def test_buy_tickets_updates_available_tickets(client: TestClient):
         "sector_id": 2,
         "quantity": 10
     }
-    client.post("/show/2/tickets", json=buy_ticket_payload)
+    client.post("/shows/2/tickets", json=buy_ticket_payload)
 
-    response = client.get("/show/2")
+    response = client.get("/shows/2/sectors")
 
     assert response.status_code == 200
 

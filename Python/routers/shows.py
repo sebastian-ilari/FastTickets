@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from sqlmodel import select
 
-from ..models import BuyTicketRequest, Sector, Show, ShowWithSectors, Ticket, TicketResponse
+from ..models import BuyTicketRequest, Sector, Show, ShowBase, ShowWithSectors, Ticket, TicketResponse
 from ..data.setup import SessionDep
 
 
@@ -21,7 +21,23 @@ async def get_shows(session: SessionDep):
     return shows
 
 @router.get(
-        "/show/{show_id}", 
+        "/shows/{show_id}", 
+        response_model=ShowBase,
+        summary="Get a specific show by its ID",
+        response_description="The show details",
+        tags=["shows"])
+async def get_show(show_id: int, session: SessionDep):
+    """
+    Gets a specific show details
+    """
+    show = session.exec(select(Show).where(Show.id == show_id)).one_or_none()
+    if not show:
+        raise HTTPException(status_code=404, detail=f"Show {show_id} not found")
+
+    return show
+
+@router.get(
+        "/shows/{show_id}/sectors", 
         response_model=list[Sector],
         summary="Get sectors for a specific show",
         response_description="A list of sectors for the specified show",
@@ -41,7 +57,7 @@ async def get_show_sectors(show_id: int, session: SessionDep):
     return sectors
 
 @router.post(
-        "/show/{show_id}/tickets", 
+        "/shows/{show_id}/tickets", 
         response_model=TicketResponse,
         summary="Buy tickets for a specific show",
         response_description="The ticket bought",
