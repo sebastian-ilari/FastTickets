@@ -3,7 +3,7 @@ from sqlmodel import create_engine, SQLModel, Session
 from sqlmodel.pool import StaticPool
 from typing import Annotated
 
-from ..models import Show
+from .models import Show
 
 """
 File database

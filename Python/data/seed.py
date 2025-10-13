@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from ..models import Show, Sector
+from .models import Show, Sector
 
 
 def get_application_data():

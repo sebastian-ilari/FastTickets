@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from sqlmodel import select
 
-from ..models import Ticket, TicketResponse
+from ..data.models import Ticket, TicketResponse
 from ..data.setup import SessionDep
 
 
