@@ -29,7 +29,7 @@ To run the application locally execute this command in the Python folder:
 fastapi dev main.py
 ```
 
-The API can then be reached in [this url](http://127.0.0.1:8000) and the Swagger documentation in [this url](http://127.0.0.1:8000/docs).
+The API can then be reached in [this url](http://127.0.0.1:8000/fast-tickets) and the Swagger documentation in [this url](http://127.0.0.1:8000/docs).
 
 ## Persistence
 

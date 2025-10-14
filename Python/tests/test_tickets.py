@@ -1,9 +1,11 @@
 from fastapi.testclient import TestClient
 
+from ..main import API_PREFIX
+
 
 # get_tickets
 def test_get_tickets_no_tickets(client: TestClient):
-    response = client.get("/tickets")
+    response = client.get(f"{API_PREFIX}/tickets")
 
     assert response.status_code == 200
     assert isinstance(response.json(), list)
@@ -14,9 +16,9 @@ def test_get_tickets_one_ticket(client: TestClient):
         "sector_id": 2,
         "quantity": 10
     }
-    client.post("/shows/2/tickets", json=buy_ticket_payload)
+    client.post(f"{API_PREFIX}/show/2/tickets", json=buy_ticket_payload)
 
-    response = client.get("/tickets")
+    response = client.get(f"{API_PREFIX}/tickets")
 
     assert response.status_code == 200
     assert isinstance(response.json(), list)
@@ -34,7 +36,7 @@ def test_get_tickets_one_ticket(client: TestClient):
 
 # get_ticket_by_id
 def test_get_ticket_by_id_ticket_not_found_returns_404(client: TestClient):
-    response = client.get("/tickets/999")
+    response = client.get(f"{API_PREFIX}/ticket/999")
 
     assert response.status_code == 404
     assert response.json() == {"detail": "Ticket 999 not found"}
@@ -44,9 +46,9 @@ def test_get_ticket_by_id_ticket_found_returns_ticket(client: TestClient):
         "sector_id": 3,
         "quantity": 30
     }
-    buy_response = client.post("/shows/2/tickets", json=buy_ticket_payload)
+    buy_response = client.post(f"{API_PREFIX}/show/2/tickets", json=buy_ticket_payload)
 
-    response = client.get(f"/tickets/{buy_response.json()["id"]}")
+    response = client.get(f"{API_PREFIX}/ticket/{buy_response.json()["id"]}")
 
     assert response.status_code == 200
     assert response.json()["id"] is not None

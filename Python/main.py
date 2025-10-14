@@ -1,10 +1,11 @@
-from fastapi import FastAPI
+from fastapi import APIRouter, FastAPI
 from contextlib import asynccontextmanager
 
 from .data.setup import create_db_and_tables, seed_data_and_session
 from .data.seed import get_application_data
 from .routers import shows, tickets
 
+API_PREFIX = "/fast-tickets"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -18,5 +19,9 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.include_router(shows.router)
-app.include_router(tickets.router)
+router_prefix = APIRouter(prefix=API_PREFIX)
+
+router_prefix.include_router(shows.router)
+router_prefix.include_router(tickets.router)
+
+app.include_router(router_prefix)

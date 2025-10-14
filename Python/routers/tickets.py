@@ -21,7 +21,7 @@ async def get_tickets(session: SessionDep):
     return [ticket.map_to_response() for ticket in tickets]
 
 @router.get(
-        "/tickets/{ticket_id}", 
+        "/ticket/{ticket_id}", 
         response_model=TicketResponse,
         summary="Get a specific ticket by its ID",
         response_description="The ticket",
