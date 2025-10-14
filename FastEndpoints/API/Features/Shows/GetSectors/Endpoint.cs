@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
-namespace API.Features.Shows.GetAvailableTickets;
+namespace API.Features.Shows.GetSectors;
 
 public class Endpoint : Endpoint<Request, Results<Ok<List<Response>>, BadRequest<string>>, Mapper>
 {

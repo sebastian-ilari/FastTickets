@@ -4,8 +4,9 @@ using System.Net;
 using System.Net.Http.Json;
 using BuyTicketResponse = API.Features.Shows.BuyTicket.Response;
 using BuyTicketRequest = API.Features.Shows.BuyTicket.Request;
-using GetAvailableTicketsResponse = API.Features.Shows.GetAvailableTickets.Response;
+using GetSectorsResponse = API.Features.Shows.GetSectors.Response;
 using GetShowsResponse = API.Features.Shows.GetShows.Response;
+using GetShowResponse = API.Features.Shows.GetShow.Response;
 using GetTicketsResponse = API.Features.Tickets.GetTickets.Response;
 
 namespace Tests.API;
@@ -30,7 +31,30 @@ public class APITests : APITestsBase
     }
 
     [Test]
-    public async Task GetAvailableTickets_ShowNotFound_ReturnsNotFound()
+    public async Task GetShow_ShowIsNotFound_ReturnsNotFound()
+    {
+        var response = await _client.GetAsync("/fast-tickets/show/5000");
+
+        response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
+    [Test]
+    public async Task GetShow_ShowIsFound_ReturnsShow()
+    {
+        var response = await _client.GetAsync("/fast-tickets/show/1");
+
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<GetShowResponse>();
+
+        result.ShouldNotBeNull();
+        result!.Artist.ShouldBe("Artist 01");
+        result!.Name.ShouldBe("Show Name 01");
+        result!.Venue.ShouldBe("Venue 01");
+        result!.Date.ShouldBeEquivalentTo(new DateTime(1990, 1, 1));
+    }
+
+    [Test]
+    public async Task GetSectors_ShowNotFound_ReturnsNotFound()
     {
         var response = await _client.GetAsync("/fast-tickets/show/200/tickets");
 
@@ -38,12 +62,12 @@ public class APITests : APITestsBase
     }
 
     [Test]
-    public async Task GetAvailableTickets_ShowFound_ReturnsSectors()
+    public async Task GetSectors_ShowFound_ReturnsSectors()
     {
         var response = await _client.GetAsync("/fast-tickets/show/2/tickets");
 
         response.EnsureSuccessStatusCode();
-        var result = await response.Content.ReadFromJsonAsync<IEnumerable<GetAvailableTicketsResponse>>();
+        var result = await response.Content.ReadFromJsonAsync<IEnumerable<GetSectorsResponse>>();
 
         result.ShouldNotBeNull();
         result.Count().ShouldBe(2);

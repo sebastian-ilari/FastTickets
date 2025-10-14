@@ -1,6 +1,6 @@
 ﻿using Models;
 
-namespace API.Features.Shows.GetAvailableTickets;
+namespace API.Features.Shows.GetSectors;
 
 public class Mapper : Mapper<object, Response, Sector>
 {
