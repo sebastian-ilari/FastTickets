@@ -25,7 +25,30 @@ public class APITests : APITestsBase
     }
 
     [Test]
-    public async Task GetAvailableTickets_ShowNotFound_ReturnsNotFound()
+    public async Task GetShowById_ShowIsNotFound_ReturnsNotFound()
+    {
+        var response = await _client.GetAsync("/fast-tickets/show/5000");
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
+    }
+
+    [Test, Order(2)]
+    public async Task GetShowById_ShowIsFound_ReturnsShow()
+    {
+        var response = await _client.GetAsync("/fast-tickets/show/1");
+
+        response.EnsureSuccessStatusCode();
+        var result = await response.Content.ReadFromJsonAsync<ShowDto>();
+
+        Assert.That(result, Is.Not.Null);
+        Assert.That(result!.Artist, Is.EqualTo("Artist 01"));
+        Assert.That(result!.Name, Is.EqualTo("Show Name 01"));
+        Assert.That(result!.Venue, Is.EqualTo("Venue 01"));
+        Assert.That(result!.Date, Is.EqualTo(new DateTime(1990, 1, 1)));
+    }
+
+    [Test]
+    public async Task GetSectors_ShowNotFound_ReturnsNotFound()
     {
         var response = await _client.GetAsync("/fast-tickets/show/200/tickets");
         
@@ -33,7 +56,7 @@ public class APITests : APITestsBase
     }
 
     [Test]
-    public async Task GetAvailableTickets_ShowFound_ReturnsSectors()
+    public async Task GetSectors_ShowFound_ReturnsSectors()
     {
         var response = await _client.GetAsync("/fast-tickets/show/2/tickets");
 

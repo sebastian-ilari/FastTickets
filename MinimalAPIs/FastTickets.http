@@ -4,6 +4,10 @@
 
 GET {{HostAddress}}/shows
 
+### Get Show by Id
+
+GET {{HostAddress}}/show/2
+
 ### Get available tickets for a Show
 
 GET {{HostAddress}}/show/2/tickets

@@ -8,7 +8,7 @@ namespace Api.Handlers;
 
 internal static class TicketHandlers
 {
-    internal static async Task<Results<NotFound<string>, Ok<List<SectorDto>>>> GetAvailableTickets(FastTicketsDB db, 
+    internal static async Task<Results<NotFound<string>, Ok<List<SectorDto>>>> GetSectors(FastTicketsDB db, 
         ILogger<SectorDto> logger, int showId)
     {
         var show = await db.Shows.FindAsync(showId);
@@ -55,9 +55,7 @@ internal static class TicketHandlers
         {
             return TypedResults.NotFound($"Ticket {ticketId} not found");
         }
-        else
-        {
-            return TypedResults.Ok(new TicketDto(ticket));
-        }
+        
+        return TypedResults.Ok(new TicketDto(ticket));
     }
 }
