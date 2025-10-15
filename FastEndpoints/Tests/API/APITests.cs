@@ -73,14 +73,13 @@ public class APITests : APITestsBase
         result.Count().ShouldBe(2);
         result!.ToArray()[0].Name.ShouldBe("Sector 01");
         result!.ToArray()[0].TotalSpots.ShouldBe(200);
-        //Not asserting on this property because it will change when tests that buy tickets are run
-        //result!.ToArray()[0].AvailableSpots.ShouldBe(100);
+        result!.ToArray()[0].AvailableSpots.ShouldBe(100);
         result!.ToArray()[1].Name.ShouldBe("Sector 02");
         result!.ToArray()[1].TotalSpots.ShouldBe(400);
         result!.ToArray()[1].AvailableSpots.ShouldBe(200);
     }
 
-    [Test, Order(1)]
+    [Test]
     public async Task GetTickets_TicketsAvailable_ReturnsTicket()
     {
         var response = await _client.GetAsync("/fast-tickets/tickets");
@@ -105,7 +104,7 @@ public class APITests : APITestsBase
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
-    [Test, Order(2)]
+    [Test]
     public async Task GetTicket_TicketIsFound_ReturnsTicket()
     {
         var response = await _client.GetAsync("/fast-tickets/ticket/1");

@@ -16,8 +16,11 @@ builder.Services.AddDbContext<FastTicketsDB>(options =>
     options.UseSqlite($"Data Source={dbName};Mode=Memory;Cache=Shared");
 });
 
-var dbFactory = new FastTicketsDBFactory(builder.Configuration);
-await dbFactory.Create();
+if (!builder.Environment.IsEnvironment("Testing"))
+{
+    var dbFactory = new FastTicketsDBFactory(builder.Configuration);
+    await dbFactory.Create();
+}
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

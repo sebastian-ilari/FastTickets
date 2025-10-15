@@ -14,6 +14,8 @@ public class TestingApplication : WebApplicationFactory<Program>
         var dbName = ConfigurationHelper.GetConfiguration()["Database:Tests"]
             ?? throw new ApplicationException("Test database name not set in appsettings.json");
 
+        builder.UseEnvironment("Testing");
+
         builder.ConfigureServices(services =>
         {
             services.AddDbContext<FastTicketsDB>(opt =>

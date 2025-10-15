@@ -26,8 +26,7 @@ public abstract class FastTicketsDBFactoryBase
     }
 
     /// <summary>
-    /// Removes and reseeds data.
-    /// ATTENTION: at this moment, this method DOES NOT reset the identity columns.
+    /// Removes seeded data
     /// </summary>
     public async Task ClearData()
     {
@@ -41,7 +40,8 @@ public abstract class FastTicketsDBFactoryBase
             await _db.Database.ExecuteSqlRawAsync($"DELETE FROM [{table}]");
         }
 
-        await _seedData.Run(_db);
+        // Reset SQLite autoincrement counters
+        await _db.Database.ExecuteSqlRawAsync("DELETE FROM sqlite_sequence");
     }
 
     public async Task Dispose()
