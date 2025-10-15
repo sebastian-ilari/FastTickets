@@ -1,21 +1,15 @@
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import StaticPool
-from sqlmodel import SQLModel, Session, create_engine
+from sqlmodel import SQLModel, Session
 
 from ..main import API_ROUTE_PREFIX, app
-from ..setup.database import get_session
+from ..setup.database import engine, get_session
 from ..setup.seed import seed_data
 from ..data.seed_test import get_test_data
 
 
 @pytest.fixture(name="session")  
 def session_fixture():  
-    engine = create_engine(
-        "sqlite://",
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool
-    )
     SQLModel.metadata.create_all(engine)
     
     # Create a connection and transaction
