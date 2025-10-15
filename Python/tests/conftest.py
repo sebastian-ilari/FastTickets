@@ -4,7 +4,8 @@ from sqlalchemy import StaticPool
 from sqlmodel import SQLModel, Session, create_engine
 
 from ..main import API_ROUTE_PREFIX, app
-from ..setup.seed import get_session, seed_data
+from ..setup.database import get_session
+from ..setup.seed import seed_data
 from ..data.seed_test import get_test_data
 
 

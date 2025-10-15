@@ -37,7 +37,9 @@ The application persistence is done in an In-memory SQLite database.
 
 ## API tests
 
-These tests also run in an In-memory SQLite database and can be run with the following command:
+These tests also run in an In-memory SQLite database. Each test run is wrapped in a transaction that is rolled back right after the test is run (see `session_fixture` function in `conftest.py`). So each test will use the same seeded data.
+
+Tests can be run with the following command:
 
 ```
 pytest -v
