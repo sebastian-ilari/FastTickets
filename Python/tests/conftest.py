@@ -3,7 +3,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import StaticPool
 from sqlmodel import SQLModel, Session, create_engine
 
-from ..main import app
+from ..main import API_ROUTE_PREFIX, app
 from ..data.setup import get_session, seed_data
 from ..data.seed_test import get_test_data
 
@@ -42,6 +42,8 @@ def client_fixture(session: Session):
     app.dependency_overrides[get_session] = get_session_override  
 
     client = TestClient(app)
+    client.base_url = str(client.base_url) + API_ROUTE_PREFIX
+    
     yield client
 
     app.dependency_overrides.clear()
