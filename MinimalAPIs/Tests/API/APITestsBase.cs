@@ -16,22 +16,24 @@ public abstract class APITestsBase
     private FastTicketsDBFactoryBase _dbFactory = null!;
 
     [OneTimeSetUp]
-    public async Task OneTimeSetup()
+    public void OneTimeSetup()
     {
         _factory = new TestingApplication();
         _client = _factory.CreateClient();
         _dbFactory = new FastTicketsDBFactoryTest(ConfigurationHelper.GetConfiguration());
+    }
+
+    [SetUp]
+    public async Task SetUp()
+    {
         _db = await _dbFactory.Create();
     }
 
-    /*
-     * Commenting this because clearing the data but not reseting the identity columns brings issues with tests.
     [TearDown]
     public async Task TearDown()
     {
         await _dbFactory.ClearData();
     }
-    */
 
     [OneTimeTearDown]
     public async Task OneTimeTearDown()

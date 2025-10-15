@@ -32,7 +32,7 @@ public class APITests : APITestsBase
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
 
-    [Test, Order(2)]
+    [Test]
     public async Task GetShowById_ShowIsFound_ReturnsShow()
     {
         var response = await _client.GetAsync("/fast-tickets/show/1");
@@ -67,14 +67,13 @@ public class APITests : APITestsBase
         Assert.That(result!, Has.Count.EqualTo(2));
         Assert.That(result!.ToArray()[0].Name, Is.EqualTo("Sector 01"));
         Assert.That(result!.ToArray()[0].TotalSpots, Is.EqualTo(200));
-        //Not asserting on this property because it will change when tests that buy tickets are run
-        //Assert.That(result!.ToArray()[0].AvailableSpots, Is.EqualTo(100));
+        Assert.That(result!.ToArray()[0].AvailableSpots, Is.EqualTo(100));
         Assert.That(result!.ToArray()[1].Name, Is.EqualTo("Sector 02"));
         Assert.That(result!.ToArray()[1].TotalSpots, Is.EqualTo(400));
         Assert.That(result!.ToArray()[1].AvailableSpots, Is.EqualTo(200));
     }
 
-    [Test, Order(1)]
+    [Test]
     public async Task GetTickets_TicketsAvailable_ReturnsTicket()
     {
         var response = await _client.GetAsync("/fast-tickets/tickets");
@@ -99,7 +98,7 @@ public class APITests : APITestsBase
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
 
-    [Test, Order(2)]
+    [Test]
     public async Task GetTicket_TicketIsFound_ReturnsTicket()
     {
         var response = await _client.GetAsync("/fast-tickets/ticket/1");
