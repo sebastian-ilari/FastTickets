@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from sqlmodel import select
 
 from ..data.models import BuyTicketRequest, Sector, Show, ShowBase, ShowWithSectors, Ticket, TicketResponse
-from ..data.setup import SessionDep
+from ..setup.seed import SessionDep
 
 
 router = APIRouter()
