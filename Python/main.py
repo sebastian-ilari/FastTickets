@@ -1,34 +1,11 @@
 from fastapi import APIRouter, FastAPI, HTTPException, Request
 from fastapi.exception_handlers import http_exception_handler
-from contextlib import asynccontextmanager
-import logging
 
-from .data.setup import create_db_and_tables, seed_data_and_session
-from .data.seed import get_application_data
+from .setup.logger import logger
+from .setup.seed import lifespan
 from .routers import shows, tickets
 
 API_ROUTE_PREFIX = "/fast-tickets"
-
-
-# Set up logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
-
-logger = logging.getLogger()
-
-
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    # Startup code
-    create_db_and_tables()
-    seed_data_and_session(get_application_data())
-
-    yield
-
-    # Shutdown code
 
 app = FastAPI(lifespan=lifespan)
 
