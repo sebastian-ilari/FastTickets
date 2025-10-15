@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from sqlmodel import select
 
-from ..data.models import BuyTicketRequest, Sector, Show, ShowBase, ShowWithSectors, Ticket, TicketResponse
 from ..setup.database import SessionDep
+from ..data.models import BuyTicketRequest, Sector, Show, ShowBase, ShowWithSectors, Ticket, TicketResponse
+from ..services.tickets import buy_tickets as service_buy_tickets
 
 
 router = APIRouter()
@@ -91,14 +92,6 @@ async def buy_tickets(show_id: int, buy_ticket_request: BuyTicketRequest, sessio
     if sector.available_spots - buy_ticket_request.quantity < 0:
         raise HTTPException(status_code=400, detail=f"Not enough available spots in sector {sector.name}")
 
-    sector.available_spots -= buy_ticket_request.quantity
-    session.add(sector)
-    session.commit()
-    session.refresh(sector)
-
-    ticket = Ticket(show_id=show_id, sector_id=buy_ticket_request.sector_id, quantity=buy_ticket_request.quantity)
-    session.add(ticket)
-    session.commit()
-    session.refresh(ticket)
+    ticket = service_buy_tickets(sector, show_id, buy_ticket_request, session)
 
     return Ticket.map_to_response(ticket)
