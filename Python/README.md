@@ -35,12 +35,20 @@ The API can then be reached in [this url](http://127.0.0.1:8000/fast-tickets) an
 
 The application persistence is done in an In-memory SQLite database.
 
-## API tests
+## Tests
 
-These tests also run against an In-memory SQLite database. Each test run is wrapped in a transaction that is rolled back right after the test is run (see `session_fixture` function in `conftest.py`). So each test will use the same seeded data.
-
-Tests can be run with the following command:
+All tests can be run with the following command:
 
 ```
 pytest -v
 ```
+
+All tests use an In-memory SQLite database and each test run is wrapped in a transaction that is rolled back right after the test is run, so each test will use the same seeded data.
+
+### API
+
+See `session_fixture` function in `conftest.py` for rollback mechanism.
+
+### Integration
+
+See `DatabaseTestCase` class in `base_test.py` for rollback mechanism.
