@@ -1,27 +1,22 @@
 import pytest
 from fastapi.testclient import TestClient
-from sqlmodel import SQLModel, Session
+from sqlmodel import Session
 
 from ...main import API_ROUTE_PREFIX, app
-from ...setup.database import engine, get_session
+from ...setup.database import create_db_and_tables, engine, get_session
 from ...setup.seed import seed_data
 from ...data.seed_test import get_test_data
 
 
 @pytest.fixture(name="session")
 def session_fixture():
-    SQLModel.metadata.create_all(engine)
-    
-    # Create a connection and transaction
+    create_db_and_tables()
     connection = engine.connect()
     transaction = connection.begin()
-    
-    # Create session bound to the transaction
     session = Session(bind=connection)
     
     yield session
     
-    # Rollback transaction and close connection
     session.close()
     transaction.rollback()
     connection.close()
