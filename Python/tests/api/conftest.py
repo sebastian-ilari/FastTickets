@@ -8,8 +8,8 @@ from ...setup.seed import seed_data
 from ...data.seed_test import get_test_data
 
 
-@pytest.fixture(name="session")  
-def session_fixture():  
+@pytest.fixture(name="session")
+def session_fixture():
     SQLModel.metadata.create_all(engine)
     
     # Create a connection and transaction
@@ -27,14 +27,14 @@ def session_fixture():
     connection.close()
 
 
-@pytest.fixture(name="client")  
-def client_fixture(session: Session):  
+@pytest.fixture(name="client")
+def client_fixture(session: Session):
     seed_data(get_test_data(), session)
 
     def get_session_override():
         return session
 
-    app.dependency_overrides[get_session] = get_session_override  
+    app.dependency_overrides[get_session] = get_session_override
 
     client = TestClient(app)
     client.base_url = str(client.base_url) + API_ROUTE_PREFIX
