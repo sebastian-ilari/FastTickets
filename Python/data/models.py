@@ -1,3 +1,4 @@
+import uuid
 from pydantic import BaseModel
 from sqlmodel import Field, Relationship, SQLModel
 
@@ -5,43 +6,43 @@ from datetime import datetime
 
 # Domain models
 class ShowBase(SQLModel):
-    id: int = Field()
+    id: uuid.UUID = Field()
     artist: str = Field()
     name: str = Field()
     venue: str = Field()
     date: datetime = Field()
 
 class SectorBase(SQLModel):
-    id: int = Field()
+    id: uuid.UUID = Field()
     name: str = Field()
     total_spots: int = Field(default=0)
     available_spots: int = Field(default=0)
 
-    show_id: int | None = Field(default=None, foreign_key="show.id")
+    show_id: uuid.UUID | None = Field(default=None, foreign_key="show.id")
 
 class TicketBase(SQLModel):
-    id: int = Field()
+    id: uuid.UUID = Field()
     quantity: int = Field()
 
 
 # Database models
 
 class Show(ShowBase, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
 
     sectors: list["Sector"] = Relationship(back_populates="show")
 
 class Sector(SectorBase, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
 
     show: Show | None = Relationship(back_populates="sectors")
 
 class Ticket(TicketBase, table=True):
-    id: int | None = Field(default=None, primary_key=True)
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
 
-    show_id: int | None = Field(default=None, foreign_key="show.id")
+    show_id: uuid.UUID | None = Field(default=None, foreign_key="show.id")
     show: Show | None = Relationship()
-    sector_id: int | None = Field(default=None, foreign_key="sector.id")
+    sector_id: uuid.UUID | None = Field(default=None, foreign_key="sector.id")
     sector: Sector | None = Relationship()
 
     def map_to_response(self) -> "TicketResponse":
@@ -57,7 +58,7 @@ class Ticket(TicketBase, table=True):
 
 # Request models
 class BuyTicketRequest(BaseModel):
-    sector_id: int
+    sector_id: uuid.UUID
     quantity: int
 
 
@@ -69,7 +70,7 @@ class SectorWithShow(SectorBase):
     show: ShowBase | None = None
     
 class TicketResponse(SQLModel):
-    id: int
+    id: uuid.UUID
     show: str
     artist: str
     sector: str

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+import uuid
 from sqlmodel import select
 
 from ..data.models import Ticket, TicketResponse
@@ -27,7 +28,7 @@ async def get_tickets(session: SessionDep):
         response_description="The ticket",
         responses={404: {"description": "Ticket {ticket_id} not found"}},
         tags=["tickets"])
-async def get_ticket_by_id(ticket_id: int, session: SessionDep):
+async def get_ticket_by_id(ticket_id: uuid.UUID, session: SessionDep):
     """
     Gets a specific ticket by its ID
 

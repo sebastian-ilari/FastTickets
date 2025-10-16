@@ -1,9 +1,10 @@
 from pytest import Session
+import uuid
 
 from ..data.models import BuyTicketRequest, Sector, Ticket
 
 
-def buy_tickets(sector: Sector, show_id: int, buy_ticket_request: BuyTicketRequest, session: Session) -> Ticket:
+def buy_tickets(sector: Sector, show_id: uuid.UUID, buy_ticket_request: BuyTicketRequest, session: Session) -> Ticket:
     sector.available_spots -= buy_ticket_request.quantity
     session.add(sector)
     session.commit()

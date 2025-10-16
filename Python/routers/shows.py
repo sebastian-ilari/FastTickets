@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+import uuid
 from sqlmodel import select
 
 from ..setup.database import SessionDep
@@ -27,7 +28,7 @@ async def get_shows(session: SessionDep):
         summary="Get a specific show by its ID",
         response_description="The show details",
         tags=["shows"])
-async def get_show(show_id: int, session: SessionDep):
+async def get_show(show_id: uuid.UUID, session: SessionDep):
     """
     Gets a specific show details
     """
@@ -44,7 +45,7 @@ async def get_show(show_id: int, session: SessionDep):
         response_description="A list of sectors for the specified show",
         responses={404: {"description": "Show {show_id} not found"}},
         tags=["shows"])
-async def get_show_sectors(show_id: int, session: SessionDep):
+async def get_show_sectors(show_id: uuid.UUID, session: SessionDep):
     """
     Gets sectors for a specific show by its ID
 
@@ -69,7 +70,7 @@ async def get_show_sectors(show_id: int, session: SessionDep):
             500: {"description": "Show {show_id} not found"},
             },
         tags=["shows"])
-async def buy_tickets(show_id: int, buy_ticket_request: BuyTicketRequest, session: SessionDep):
+async def buy_tickets(show_id: uuid.UUID, buy_ticket_request: BuyTicketRequest, session: SessionDep):
     """
     Buys tickets for a show
 
