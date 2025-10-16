@@ -1,17 +1,16 @@
 import unittest
-from sqlmodel import Session
 
-from ...setup.database import create_db_and_tables, engine
+from ...setup.database_transaction import DatabaseTransaction
 
 
 class DatabaseTestCase(unittest.TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.database_transaction = DatabaseTransaction()
+
     def setUp(self):
-        create_db_and_tables()
-        self.connection = engine.connect()
-        self.transaction = self.connection.begin()
-        self.session = Session(bind=self.connection)
+        self.database_transaction.create_transaction()
+        self.session = self.database_transaction.session
     
     def tearDown(self):
-        self.session.close()
-        self.transaction.rollback()
-        self.connection.close()
+        self.database_transaction.rollback_transaction()

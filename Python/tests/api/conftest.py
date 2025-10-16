@@ -3,24 +3,21 @@ from fastapi.testclient import TestClient
 from sqlmodel import Session
 
 from ...main import API_ROUTE_PREFIX, app
-from ...setup.database import create_db_and_tables, engine, get_session
+from ...setup.database_transaction import DatabaseTransaction
+from ...setup.database import get_session
 from ...setup.seed import seed_data
 from ...data.seed_test import get_test_data
 
 
 @pytest.fixture(name="session")
 def session_fixture():
-    create_db_and_tables()
-    connection = engine.connect()
-    transaction = connection.begin()
-    session = Session(bind=connection)
-    
+    database_transaction = DatabaseTransaction()
+    database_transaction.create_transaction()
+    session = database_transaction.session
+
     yield session
     
-    session.close()
-    transaction.rollback()
-    connection.close()
-
+    database_transaction.rollback_transaction()
 
 @pytest.fixture(name="client")
 def client_fixture(session: Session):
