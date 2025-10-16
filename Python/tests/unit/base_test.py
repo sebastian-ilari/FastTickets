@@ -1,7 +1,7 @@
 import unittest
 from sqlmodel import Session
 
-from ..setup.database import engine, create_db_and_tables
+from ...setup.database import engine, create_db_and_tables
 
 
 class DatabaseTestCase(unittest.TestCase):

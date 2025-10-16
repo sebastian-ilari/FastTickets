@@ -2,10 +2,10 @@ import pytest
 from fastapi.testclient import TestClient
 from sqlmodel import SQLModel, Session
 
-from ..main import API_ROUTE_PREFIX, app
-from ..setup.database import engine, get_session
-from ..setup.seed import seed_data
-from ..data.seed_test import get_test_data
+from ...main import API_ROUTE_PREFIX, app
+from ...setup.database import engine, get_session
+from ...setup.seed import seed_data
+from ...data.seed_test import get_test_data
 
 
 @pytest.fixture(name="session")  

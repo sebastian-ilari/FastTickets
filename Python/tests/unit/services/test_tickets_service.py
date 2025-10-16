@@ -1,5 +1,5 @@
-from ...services.tickets import buy_tickets
-from ...data.models import BuyTicketRequest, Sector
+from ....services.tickets import buy_tickets
+from ....data.models import BuyTicketRequest, Sector
 from ..base_test import DatabaseTestCase
 
 
