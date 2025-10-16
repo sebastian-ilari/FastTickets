@@ -1,13 +1,12 @@
 from sqlmodel import Session
 
-from ..setup.database import create_db_and_tables, get_engine
+from ..setup.database import create_db_and_tables, DATABASE_ENGINE
 
 
 class DatabaseTransaction:
     def create_transaction(self):
-        self.engine = get_engine()
-        create_db_and_tables(self.engine)
-        self.connection = self.engine.connect()
+        create_db_and_tables()
+        self.connection = DATABASE_ENGINE.connect()
         self.transaction = self.connection.begin()
         self.session = Session(bind=self.connection)
 

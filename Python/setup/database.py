@@ -1,5 +1,4 @@
 from fastapi import Depends
-from sqlalchemy import Engine
 from sqlmodel import create_engine, SQLModel, Session
 from sqlmodel.pool import StaticPool
 from typing import Annotated
@@ -15,20 +14,17 @@ engine = create_engine(sqlite_url, connect_args=connect_args)
 """
 
 # In-memory database
-def get_engine() -> Engine:
-     return create_engine(
-        "sqlite://",
-        connect_args={"check_same_thread": False},
-        poolclass=StaticPool,
-    )
+DATABASE_ENGINE = create_engine(
+    "sqlite://",
+    connect_args={"check_same_thread": False},
+    poolclass=StaticPool,
+)
 
-def create_db_and_tables(engine=None):
-    if engine is None:
-        engine = get_engine()
-    SQLModel.metadata.create_all(engine)
+def create_db_and_tables():
+    SQLModel.metadata.create_all(DATABASE_ENGINE)
 
 def get_session():
-    with Session(get_engine()) as session:
+    with Session(DATABASE_ENGINE) as session:
         yield session
 
 SessionDep = Annotated[Session, Depends(get_session)]

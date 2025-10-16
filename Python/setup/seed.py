@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.concurrency import asynccontextmanager
 from sqlmodel import Session
 
-from ..setup.database import create_db_and_tables, get_engine
+from ..setup.database import create_db_and_tables, DATABASE_ENGINE
 from ..data.models import Show
 from ..data.seed import get_application_data
 
@@ -12,7 +12,7 @@ def seed_data(shows: list[Show], session: Session):
     session.commit()
 
 def seed_data_and_session(shows: list[Show]):
-    with Session(get_engine()) as session:
+    with Session(DATABASE_ENGINE) as session:
         seed_data(shows, session)
 
 
