@@ -1,18 +1,9 @@
-import unittest
-from sqlmodel import Session
-
 from ...services.tickets import buy_tickets
 from ...data.models import BuyTicketRequest, Sector
-from ...setup.database import engine, create_db_and_tables
+from ..base_test import DatabaseTestCase
 
 
-class TestTicketsService(unittest.TestCase):
-    def setUp(self):
-        create_db_and_tables()
-        self.session = Session(engine)
-    
-    def tearDown(self):
-        self.session.close()
+class TestTicketsService(DatabaseTestCase):
     
     def test_buy_tickets_decrements_available_spots_and_returns_ticket(self):
         sector = Sector(id=1, name="Test Sector", show_id=1, available_spots=100)
