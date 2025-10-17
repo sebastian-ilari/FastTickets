@@ -1,3 +1,3 @@
 ﻿namespace Models.Dtos;
 
-public record TicketForCreationDto(int SectorId, int Quantity);
+public record TicketForCreationDto(Guid SectorId, int Quantity);

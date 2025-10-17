@@ -1,5 +1,6 @@
 ﻿using Models.Dtos;
 using NUnit.Framework;
+using Persistence.Data;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -18,16 +19,14 @@ public class APITests : APITestsBase
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result!, Has.Count.EqualTo(2));
-        Assert.That(result!.ToArray()[0].Artist, Is.EqualTo("Artist 01"));
-        Assert.That(result!.ToArray()[0].Name, Is.EqualTo("Show Name 01"));
-        Assert.That(result!.ToArray()[0].Venue, Is.EqualTo("Venue 01"));
-        Assert.That(result!.ToArray()[0].Date, Is.EqualTo(new DateTime(1990, 1, 1)));
+        Assert.That(result!.Any(s => s.Artist == "Artist 01" && s.Name == "Show Name 01" && s.Venue == "Venue 01" 
+            && s.Date.Equals(new DateTime(1990, 1, 1))));
     }
 
     [Test]
     public async Task GetShowById_ShowIsNotFound_ReturnsNotFound()
     {
-        var response = await _client.GetAsync("/fast-tickets/show/5000");
+        var response = await _client.GetAsync($"/fast-tickets/show/{TestDataIds.INVALID_ID}");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
@@ -35,7 +34,7 @@ public class APITests : APITestsBase
     [Test]
     public async Task GetShowById_ShowIsFound_ReturnsShow()
     {
-        var response = await _client.GetAsync("/fast-tickets/show/1");
+        var response = await _client.GetAsync($"/fast-tickets/show/{TestDataIds.FIRST_SHOW_ID}");
 
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<ShowDto>();
@@ -50,7 +49,7 @@ public class APITests : APITestsBase
     [Test]
     public async Task GetSectors_ShowNotFound_ReturnsNotFound()
     {
-        var response = await _client.GetAsync("/fast-tickets/show/200/tickets");
+        var response = await _client.GetAsync($"/fast-tickets/show/{TestDataIds.INVALID_ID}/sectors");
         
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
@@ -58,19 +57,15 @@ public class APITests : APITestsBase
     [Test]
     public async Task GetSectors_ShowFound_ReturnsSectors()
     {
-        var response = await _client.GetAsync("/fast-tickets/show/2/tickets");
+        var response = await _client.GetAsync($"/fast-tickets/show/{TestDataIds.SECOND_SHOW_ID}/sectors");
 
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<IEnumerable<SectorDto>>();
 
         Assert.That(result, Is.Not.Null);
         Assert.That(result!, Has.Count.EqualTo(2));
-        Assert.That(result!.ToArray()[0].Name, Is.EqualTo("Sector 01"));
-        Assert.That(result!.ToArray()[0].TotalSpots, Is.EqualTo(200));
-        Assert.That(result!.ToArray()[0].AvailableSpots, Is.EqualTo(100));
-        Assert.That(result!.ToArray()[1].Name, Is.EqualTo("Sector 02"));
-        Assert.That(result!.ToArray()[1].TotalSpots, Is.EqualTo(400));
-        Assert.That(result!.ToArray()[1].AvailableSpots, Is.EqualTo(200));
+        Assert.That(result!.Any(s => s.Name == "Sector 01" && s.TotalSpots == 200 && s.AvailableSpots == 100));
+        Assert.That(result!.Any(s => s.Name == "Sector 02" && s.TotalSpots == 400 && s.AvailableSpots == 200));
     }
 
     [Test]
@@ -93,7 +88,7 @@ public class APITests : APITestsBase
     [Test]
     public async Task GetTicket_TicketIsNotFound_ReturnsNotFound()
     {
-        var response = await _client.GetAsync("/fast-tickets/ticket/5000");
+        var response = await _client.GetAsync($"/fast-tickets/ticket/{TestDataIds.INVALID_ID}");
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.NotFound));
     }
@@ -101,7 +96,7 @@ public class APITests : APITestsBase
     [Test]
     public async Task GetTicket_TicketIsFound_ReturnsTicket()
     {
-        var response = await _client.GetAsync("/fast-tickets/ticket/1");
+        var response = await _client.GetAsync($"/fast-tickets/ticket/{TestDataIds.TICKET_ID}");
 
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<TicketDto>();
@@ -117,7 +112,8 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_QuantityIsZero_ReturnsBadRequest()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new TicketForCreationDto(2, 0));
+        var response = await _client.PostAsJsonAsync($"/fast-tickets/show/{TestDataIds.SECOND_SHOW_ID}/tickets", 
+            new TicketForCreationDto(TestDataIds.SECOND_SHOW_ID, 0));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
@@ -125,7 +121,8 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_QuantityIsNegative_ReturnsBadRequest()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new TicketForCreationDto(2, -5));
+        var response = await _client.PostAsJsonAsync($"/fast-tickets/show/{TestDataIds.SECOND_SHOW_ID}/tickets", 
+            new TicketForCreationDto(TestDataIds.SECOND_SHOW_SECTOR_ID, -5));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.BadRequest));
     }
@@ -133,7 +130,8 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_ShowNotFound_ReturnsInternalServerError()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/200/tickets", new TicketForCreationDto(2, 1));
+        var response = await _client.PostAsJsonAsync($"/fast-tickets/show/{TestDataIds.INVALID_ID}/tickets", 
+            new TicketForCreationDto(TestDataIds.INVALID_ID, 1));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
     }
@@ -141,7 +139,8 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_SectorNotFound_ReturnsInternalServerError()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new TicketForCreationDto(200, 1));
+        var response = await _client.PostAsJsonAsync($"/fast-tickets/show/{TestDataIds.SECOND_SHOW_ID}/tickets", 
+            new TicketForCreationDto(TestDataIds.INVALID_ID, 1));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
     }
@@ -149,7 +148,8 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_NoTicketsAvailable_ReturnsInternalServerError()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new TicketForCreationDto(2, 150));
+        var response = await _client.PostAsJsonAsync($"/fast-tickets/show/{TestDataIds.SECOND_SHOW_ID}/tickets", 
+            new TicketForCreationDto(TestDataIds.SECOND_SHOW_SECTOR_ID, 150));
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.InternalServerError));
     }
@@ -157,7 +157,8 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_TicketsAvailable_ReturnsTicket()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new TicketForCreationDto(2, 5));
+        var response = await _client.PostAsJsonAsync($"/fast-tickets/show/{TestDataIds.SECOND_SHOW_ID}/tickets", 
+            new TicketForCreationDto(TestDataIds.SECOND_SHOW_SECTOR_ID, 5));
 
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<TicketDto>();

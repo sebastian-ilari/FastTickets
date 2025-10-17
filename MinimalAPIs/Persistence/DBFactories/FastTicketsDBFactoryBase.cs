@@ -40,8 +40,9 @@ public abstract class FastTicketsDBFactoryBase
             await _db.Database.ExecuteSqlRawAsync($"DELETE FROM [{table}]");
         }
 
-        // Reset SQLite autoincrement counters
-        await _db.Database.ExecuteSqlRawAsync("DELETE FROM sqlite_sequence");
+        // Reset SQLite autoincrement counters. Not needed after moving to GUIDs, but leaving it here in case of
+        // future schema changes.
+        //await _db.Database.ExecuteSqlRawAsync("DELETE FROM sqlite_sequence");
     }
 
     public async Task Dispose()

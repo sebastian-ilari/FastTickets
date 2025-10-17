@@ -9,7 +9,7 @@ namespace Api.Handlers;
 internal static class TicketHandlers
 {
     internal static async Task<Results<NotFound<string>, Ok<List<SectorDto>>>> GetSectors(FastTicketsDB db, 
-        ILogger<SectorDto> logger, int showId)
+        ILogger<SectorDto> logger, Guid showId)
     {
         var show = await db.Shows.FindAsync(showId);
         if (show == null)
@@ -23,8 +23,8 @@ internal static class TicketHandlers
             .Select(s => new SectorDto(s)).ToListAsync());
     }
 
-    internal static async Task<Results<BadRequest<string>, CreatedAtRoute<TicketDto>>> BuyTicket(ITicketService ticketService, 
-        int showId, TicketForCreationDto ticketForCreationDto)
+    internal static async Task<Results<BadRequest<string>, CreatedAtRoute<TicketDto>>> BuyTickets(
+        ITicketService ticketService, Guid showId, TicketForCreationDto ticketForCreationDto)
     {
         if (ticketForCreationDto.Quantity <= 0)
         {
@@ -44,7 +44,7 @@ internal static class TicketHandlers
             .Select(t => new TicketDto(t))
             .ToListAsync());
 
-    internal static async Task<Results<NotFound<string>, Ok<TicketDto>>> GetTicket(FastTicketsDB db, int ticketId)
+    internal static async Task<Results<NotFound<string>, Ok<TicketDto>>> GetTicket(FastTicketsDB db, Guid ticketId)
     {
         var ticket = await db.Tickets
             .Include(t => t.Show)

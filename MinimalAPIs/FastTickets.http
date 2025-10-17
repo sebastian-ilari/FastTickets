@@ -1,23 +1,27 @@
 ﻿@HostAddress = http://localhost:8080/fast-tickets
 
+# This value can be replaced on the fly by Ids returned by the Get Shows endpoint
+@ShowId = af735473-e132-4384-bb6a-406c0c08ca37
+
+
 ### Get Shows
 
 GET {{HostAddress}}/shows
 
 ### Get Show by Id
 
-GET {{HostAddress}}/show/2
+GET {{HostAddress}}/show/{{ShowId}}
 
-### Get available tickets for a Show
+### Get Sectors for a Show
 
-GET {{HostAddress}}/show/2/tickets
+GET {{HostAddress}}/show/{{ShowId}}/sectors
 
 ### Buy tickets for a Show
 
-POST {{HostAddress}}/show/2/tickets
+POST {{HostAddress}}/show/{{ShowId}}/tickets
 Content-Type: application/json
 {
-  "sectorId": 2,
+  "sectorId": "2aa1b136-a67b-49ca-92d6-0f28e5431dda",
   "quantity": 50
 }
 
@@ -27,4 +31,4 @@ GET {{HostAddress}}/tickets
 
 ### Get Ticket by Id
 
-GET {{HostAddress}}/ticket/1
+GET {{HostAddress}}/ticket/9c4a1a76-e4f9-42d1-a06b-7e62f13d5388

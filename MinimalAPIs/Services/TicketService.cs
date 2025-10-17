@@ -12,7 +12,7 @@ public class TicketService : ITicketService
         _db = db;
     }
 
-    public async Task<Ticket> BuyTicket(int showId, int sectorId, int quantity)
+    public async Task<Ticket> BuyTicket(Guid showId, Guid sectorId, int quantity)
     {
         var sector = await _db.Sectors.FindAsync(sectorId) 
             ?? throw new InvalidOperationException($"Sector {sectorId} not found for show {showId}");

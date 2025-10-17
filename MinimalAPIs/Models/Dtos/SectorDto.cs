@@ -2,7 +2,7 @@
 
 public class SectorDto
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string Name { get; set; } = null!;
     public long TotalSpots { get; set; }
     public long AvailableSpots { get; set; }

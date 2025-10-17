@@ -20,9 +20,6 @@ public class SeedData : ISeedData
             u2Show
         };
 
-        await db.Shows.AddRangeAsync(shows);
-        await db.SaveChangesAsync();
-
         pinkFloydShow.AddSectors(
         [
             Sector.Create(pinkFloydShow.Id, "Crew", 100, 100)
@@ -46,6 +43,7 @@ public class SeedData : ISeedData
             Sector.Create(u2Show.Id, "VIP", 4000, 4000)
         ]);
 
+        await db.Shows.AddRangeAsync(shows);
         await db.SaveChangesAsync();
     }
 }
