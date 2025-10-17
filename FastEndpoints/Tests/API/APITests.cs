@@ -8,6 +8,7 @@ using GetSectorsResponse = API.Features.Shows.GetSectors.Response;
 using GetShowsResponse = API.Features.Shows.GetShows.Response;
 using GetShowResponse = API.Features.Shows.GetShow.Response;
 using GetTicketsResponse = API.Features.Tickets.GetTickets.Response;
+using Persistence.Data;
 
 namespace Tests.API;
 
@@ -24,16 +25,14 @@ public class APITests : APITestsBase
 
         result.ShouldNotBeNull();
         result.Count().ShouldBe(2);
-        result!.ToArray()[0].Artist.ShouldBe("Artist 01");
-        result!.ToArray()[0].Name.ShouldBe("Show Name 01");
-        result!.ToArray()[0].Venue.ShouldBe("Venue 01");
-        result!.ToArray()[0].Date.ShouldBeEquivalentTo(new DateTime(1990, 1, 1));
+        Assert.That(result!.Any(s => s.Artist == "Artist 01" && s.Name == "Show Name 01" && s.Venue == "Venue 01"
+            && s.Date.Equals(new DateTime(1990, 1, 1))));
     }
 
     [Test]
     public async Task GetShow_ShowIsNotFound_ReturnsNotFound()
     {
-        var response = await _client.GetAsync("/fast-tickets/show/5000");
+        var response = await _client.GetAsync($"/fast-tickets/show/{TestDataIds.INVALID_ID}");
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
@@ -41,7 +40,7 @@ public class APITests : APITestsBase
     [Test]
     public async Task GetShow_ShowIsFound_ReturnsShow()
     {
-        var response = await _client.GetAsync("/fast-tickets/show/1");
+        var response = await _client.GetAsync($"/fast-tickets/show/{TestDataIds.FIRST_SHOW_ID}");
 
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<GetShowResponse>();
@@ -56,7 +55,7 @@ public class APITests : APITestsBase
     [Test]
     public async Task GetSectors_ShowNotFound_ReturnsNotFound()
     {
-        var response = await _client.GetAsync("/fast-tickets/show/200/tickets");
+        var response = await _client.GetAsync($"/fast-tickets/show/{TestDataIds.INVALID_ID}/sectors");
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
@@ -64,19 +63,15 @@ public class APITests : APITestsBase
     [Test]
     public async Task GetSectors_ShowFound_ReturnsSectors()
     {
-        var response = await _client.GetAsync("/fast-tickets/show/2/tickets");
+        var response = await _client.GetAsync($"/fast-tickets/show/{TestDataIds.SECOND_SHOW_ID}/sectors");
 
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<IEnumerable<GetSectorsResponse>>();
 
         result.ShouldNotBeNull();
         result.Count().ShouldBe(2);
-        result!.ToArray()[0].Name.ShouldBe("Sector 01");
-        result!.ToArray()[0].TotalSpots.ShouldBe(200);
-        result!.ToArray()[0].AvailableSpots.ShouldBe(100);
-        result!.ToArray()[1].Name.ShouldBe("Sector 02");
-        result!.ToArray()[1].TotalSpots.ShouldBe(400);
-        result!.ToArray()[1].AvailableSpots.ShouldBe(200);
+        Assert.That(result!.Any(s => s.Name == "Sector 01" && s.TotalSpots == 200 && s.AvailableSpots == 100));
+        Assert.That(result!.Any(s => s.Name == "Sector 02" && s.TotalSpots == 400 && s.AvailableSpots == 200));
     }
 
     [Test]
@@ -99,7 +94,7 @@ public class APITests : APITestsBase
     [Test]
     public async Task GetTicket_TicketIsNotFound_ReturnsNotFound()
     {
-        var response = await _client.GetAsync("/fast-tickets/ticket/5000");
+        var response = await _client.GetAsync($"/fast-tickets/ticket/{TestDataIds.INVALID_ID}");
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
@@ -107,7 +102,7 @@ public class APITests : APITestsBase
     [Test]
     public async Task GetTicket_TicketIsFound_ReturnsTicket()
     {
-        var response = await _client.GetAsync("/fast-tickets/ticket/1");
+        var response = await _client.GetAsync($"/fast-tickets/ticket/{TestDataIds.TICKET_ID}");
 
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<GetTicketsResponse>();
@@ -123,7 +118,8 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_QuantityIsZero_ReturnsBadRequest()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketRequest(2, 2, 0));
+        var response = await _client.PostAsJsonAsync($"/fast-tickets/show/{TestDataIds.SECOND_SHOW_ID}/tickets", 
+            new BuyTicketRequest(TestDataIds.SECOND_SHOW_ID, TestDataIds.SECOND_SHOW_SECTOR_ID, 0));
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
@@ -131,7 +127,8 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_QuantityIsNegative_ReturnsBadRequest()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketRequest(2, 2, -5));
+        var response = await _client.PostAsJsonAsync($"/fast-tickets/show/{TestDataIds.SECOND_SHOW_ID}/tickets", 
+            new BuyTicketRequest(TestDataIds.SECOND_SHOW_ID, TestDataIds.SECOND_SHOW_SECTOR_ID, -5));
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
     }
@@ -139,7 +136,8 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_ShowNotFound_ReturnsInternalServerError()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/200/tickets", new BuyTicketRequest(200, 2, 1));
+        var response = await _client.PostAsJsonAsync($"/fast-tickets/show/{TestDataIds.INVALID_ID}/tickets", 
+            new BuyTicketRequest(TestDataIds.SECOND_SHOW_ID, TestDataIds.SECOND_SHOW_SECTOR_ID, 1));
 
         response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
     }
@@ -147,7 +145,8 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_SectorNotFound_ReturnsInternalServerError()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketRequest(2, 200, 1));
+        var response = await _client.PostAsJsonAsync($"/fast-tickets/show/{TestDataIds.SECOND_SHOW_ID}/tickets", 
+            new BuyTicketRequest(TestDataIds.SECOND_SHOW_ID, TestDataIds.INVALID_ID, 1));
 
         response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
     }
@@ -155,7 +154,8 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_NoTicketsAvailable_ReturnsInternalServerError()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketRequest(2, 2, 150));
+        var response = await _client.PostAsJsonAsync($"/fast-tickets/show/{TestDataIds.SECOND_SHOW_ID}/tickets", 
+            new BuyTicketRequest(TestDataIds.SECOND_SHOW_ID, TestDataIds.SECOND_SHOW_SECTOR_ID, 150));
 
         response.StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
     }
@@ -163,7 +163,8 @@ public class APITests : APITestsBase
     [Test]
     public async Task BuyTicket_TicketsAvailable_ReturnsTicket()
     {
-        var response = await _client.PostAsJsonAsync("/fast-tickets/show/2/tickets", new BuyTicketRequest(2, 2, 5));
+        var response = await _client.PostAsJsonAsync($"/fast-tickets/show/{TestDataIds.SECOND_SHOW_ID}/tickets", 
+            new BuyTicketRequest(TestDataIds.SECOND_SHOW_ID, TestDataIds.SECOND_SHOW_SECTOR_ID, 5));
 
         response.EnsureSuccessStatusCode();
         var result = await response.Content.ReadFromJsonAsync<BuyTicketResponse>();

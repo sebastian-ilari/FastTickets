@@ -2,7 +2,7 @@
 
 public class Response
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string Show { get; set; } = null!;
     public string Artist { get; set; } = null!;
     public string Sector { get; set; } = null!;

@@ -10,7 +10,7 @@ public class SectorTests
     [Test]
     public void UpdateAvailableSpots_NotEnoughSpots_ThrowsException()
     {
-        var sector = Sector.Create(1, "Test", 10, 5);
+        var sector = Sector.Create(Guid.NewGuid(), "Test", 10, 5);
 
         var action = () => sector.UpdateAvailableSpots(50);
         
@@ -20,7 +20,7 @@ public class SectorTests
     [Test]
     public void UpdateAvailableSpots_EnoughSpots_AvailableSpotsAreUpdated()
     {
-        var sector = Sector.Create(1, "Test", 10, 50);
+        var sector = Sector.Create(Guid.NewGuid(), "Test", 10, 50);
 
         sector.UpdateAvailableSpots(5);
 

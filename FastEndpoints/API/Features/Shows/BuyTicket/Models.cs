@@ -1,9 +1,9 @@
 ﻿namespace API.Features.Shows.BuyTicket;
 
-public class Request(int showId, int sectorId, int quantity)
+public class Request(Guid showId, Guid sectorId, int quantity)
 {
-    public int ShowId { get; set; } = showId;
-    public int SectorId { get; set; } = sectorId;
+    public Guid ShowId { get; set; } = showId;
+    public Guid SectorId { get; set; } = sectorId;
     public int Quantity { get; set; } = quantity;
 }
 
@@ -19,7 +19,7 @@ public class Validator : Validator<Request>
 
 public class Response
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string Show { get; set; } = null!;
     public string Artist { get; set; } = null!;
     public string Sector { get; set; } = null!;

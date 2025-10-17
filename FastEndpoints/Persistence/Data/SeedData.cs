@@ -6,9 +6,9 @@ public class SeedData : ISeedData
 {
     public async Task Run(FastTicketsDB db)
     {
-        var pinkFloydShow = Show.Create("Pink Floyd", "Live at Ponpeii", "Ancient Roman amphitheatre - Pompeii", 
+        var pinkFloydShow = Show.Create("Pink Floyd", "Live at Ponpeii", "Ancient Roman amphitheatre - Pompeii",
             new DateTime(1971, 10, 1));
-        var davidBowieShow = Show.Create("David Bowie", "Ziggy Stardust tour", "Borough Assembly Hall", 
+        var davidBowieShow = Show.Create("David Bowie", "Ziggy Stardust tour", "Borough Assembly Hall",
             new DateTime(1972, 1, 29));
         var queenShow = Show.Create("Queen", "Live Aid", "Wembley Stadium", new DateTime(1985, 7, 13));
         var u2Show = Show.Create("U2", "Zoo TV", "Ireland RDS Arena", new DateTime(1993, 8, 28));
@@ -19,9 +19,6 @@ public class SeedData : ISeedData
             queenShow,
             u2Show
         };
-
-        await db.Shows.AddRangeAsync(shows);
-        await db.SaveChangesAsync();
 
         pinkFloydShow.AddSectors(
         [
@@ -46,6 +43,7 @@ public class SeedData : ISeedData
             Sector.Create(u2Show.Id, "VIP", 4000, 4000)
         ]);
 
+        await db.Shows.AddRangeAsync(shows);
         await db.SaveChangesAsync();
     }
 }

@@ -2,14 +2,15 @@
 
 public class Sector
 {
-    public int Id { get; private set; }
-    public int ShowId { get; private set; }
+    public Guid Id { get; private set; }
+    public Guid ShowId { get; private set; }
     public string Name { get; private set; } = null!;
     public long TotalSpots { get; private set; }
     public long AvailableSpots { get; private set; }
 
-    public static Sector Create(int showId, string name, long totalSpots, long availableSpots) => new()
+    public static Sector Create(Guid showId, string name, long totalSpots, long availableSpots, Guid? id = null) => new()
     {
+        Id = id ?? Guid.NewGuid(),
         ShowId = showId,
         Name = name,
         TotalSpots = totalSpots,

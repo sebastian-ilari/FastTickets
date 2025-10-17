@@ -4,5 +4,5 @@ namespace API.Services;
 
 public interface ITicketService
 {
-    public Task<Ticket> BuyTicket(int showId, int sectorId, int quantity);
+    public Task<Ticket> BuyTicket(Guid showId, Guid sectorId, int quantity);
 }

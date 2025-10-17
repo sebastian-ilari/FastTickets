@@ -2,12 +2,12 @@
 
 public class Request
 {
-    public int ShowId { get; set; }
+    public Guid ShowId { get; set; }
 }
 
 public class Response
 {
-    public int Id { get; set; }
+    public Guid Id { get; set; }
     public string Artist { get; set; } = null!;
     public string Name { get; set; } = null!;
     public string Venue { get; set; } = null!;

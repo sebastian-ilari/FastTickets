@@ -15,7 +15,7 @@ public class Endpoint : Endpoint<Request, Results<Ok<List<Response>>, BadRequest
 
     public override void Configure()
     {
-        Get("show/{ShowId}/tickets");
+        Get("show/{ShowId}/sectors");
         AllowAnonymous();
     }
 
